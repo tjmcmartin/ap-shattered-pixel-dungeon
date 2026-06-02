@@ -44,6 +44,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APLocation;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.EmoIcon;
@@ -644,6 +646,13 @@ public class GameScene extends PixelScene {
 						GLog.p(Messages.get(this, "secret_hint"));
 					}
 				Random.popGenerator();
+			}
+
+			if (Dungeon.depth > 1 && Dungeon.depth < 27) {
+				APLocation location = APLocation.fromString("CLEAR_FLOOR_" + (Dungeon.depth - 1));
+				if (location != null) {
+					APManager.checkLocation(location);
+				}
 			}
 
 			boolean unspentTalents = false;
