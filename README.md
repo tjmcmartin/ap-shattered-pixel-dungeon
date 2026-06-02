@@ -30,7 +30,7 @@ https://github.com/00-Evan/shattered-pixel-dungeon
 
 ### Archipelago Integration
 
-Integration and modifications by Tyler McMartin.
+Integration and modifications by tjmcmartin.
 
 ## License
 
