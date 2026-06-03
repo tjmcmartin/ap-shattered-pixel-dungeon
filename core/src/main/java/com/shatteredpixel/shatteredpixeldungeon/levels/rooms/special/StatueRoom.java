@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -43,7 +45,9 @@ public class StatueRoom extends SpecialRoom {
 		Door door = entrance();
 		
 		door.set( Door.Type.LOCKED );
-		level.addItemToSpawn( new IronKey( Dungeon.depth ) );
+		if ( APManager.hasItem(APItem.IRON_KEY)) {
+			level.addItemToSpawn(new IronKey(Dungeon.depth));
+		}
 		
 		if (door.x == left) {
 			

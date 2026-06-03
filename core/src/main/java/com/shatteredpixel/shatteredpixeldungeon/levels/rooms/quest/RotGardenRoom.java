@@ -25,6 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotHeart;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.RotLasher;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -49,7 +51,9 @@ public class RotGardenRoom extends SpecialRoom {
 
 		Door entrance = entrance();
 		entrance.set(Door.Type.LOCKED);
-		level.addItemToSpawn(new IronKey(Dungeon.depth));
+		if (APManager.hasItem(APItem.IRON_KEY)) {
+			level.addItemToSpawn(new IronKey(Dungeon.depth));
+		}
 
 		//define basic terrain, mostly high grass with some chaotically placed wall tiles
 		Painter.fill(level, this, Terrain.WALL);

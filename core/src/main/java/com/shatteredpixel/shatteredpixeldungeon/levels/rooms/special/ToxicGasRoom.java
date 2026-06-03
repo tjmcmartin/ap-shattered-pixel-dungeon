@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -103,7 +105,9 @@ public class ToxicGasRoom extends SpecialRoom {
 			level.drop(item, goldPositions.remove(0)).type = Heap.Type.CHEST;
 		}
 
-		level.addItemToSpawn(new PotionOfPurity());
+		if ( APManager.hasItem(APItem.POTION_OF_PURITY)) {
+			level.addItemToSpawn(new PotionOfPurity());
+		}
 
 		entrance().set( Door.Type.REGULAR );
 

@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Foliage;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -40,7 +42,9 @@ public class GardenRoom extends SpecialRoom {
 		Painter.fill( level, this, 2, Terrain.GRASS );
 		
 		entrance().set( Door.Type.LOCKED );
-		level.addItemToSpawn( new IronKey( Dungeon.depth ) );
+		if ( APManager.hasItem(APItem.IRON_KEY)) {
+			level.addItemToSpawn(new IronKey(Dungeon.depth));
+		}
 
 		int bushes = Random.Int(3);
 		if (bushes == 0) {

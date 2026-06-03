@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -118,8 +120,10 @@ public class TrapsRoom extends SpecialRoom {
 			Painter.set( level, pos, Terrain.PEDESTAL );
 			level.drop( prize( level ), pos ).type = Heap.Type.CHEST;
 		}
-		
-		level.addItemToSpawn( new PotionOfLevitation() );
+
+		if ( APManager.hasItem(APItem.POTION_OF_LEVITATION)) {
+			level.addItemToSpawn(new PotionOfLevitation());
+		}
 	}
 	
 	private static Item prize( Level level ) {

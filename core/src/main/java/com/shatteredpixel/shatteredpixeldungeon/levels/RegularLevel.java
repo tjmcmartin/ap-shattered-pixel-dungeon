@@ -37,6 +37,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Statue;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Ghost;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -434,7 +436,9 @@ public abstract class RegularLevel extends Level {
 					Heap dropped = drop(toDrop, cell);
 					if (heaps.get(cell) == dropped) {
 						dropped.type = Heap.Type.LOCKED_CHEST;
-						addItemToSpawn(new GoldenKey(Dungeon.depth));
+						if (APManager.hasItem(APItem.GOLD_KEY)) {
+							addItemToSpawn(new GoldenKey(Dungeon.depth));
+						}
 					}
 				}
 			} else {

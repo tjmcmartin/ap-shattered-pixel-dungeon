@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.treasure;
 
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -88,7 +90,9 @@ public class VaultBookcaseTreasureRoom extends VaultTreasureRoom {
 		treasureItem.levelKnown = treasureItem.cursedKnown = true;
 		level.drop(treasureItem,secondItem).type = Heap.Type.CHEST;
 
-		level.addItemToSpawn(new PotionOfLiquidFlame());
+		if (APManager.hasItem(APItem.POTION_OF_LIQUID_FLAME)) {
+			level.addItemToSpawn(new PotionOfLiquidFlame());
+		}
 
 		Painter.drawInside(level, this, entrance, 2, Terrain.EMPTY_SP);
 

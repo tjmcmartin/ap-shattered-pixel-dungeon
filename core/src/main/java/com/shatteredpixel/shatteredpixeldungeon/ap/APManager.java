@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 public class APManager {
 
     private static final Set<APLocation> completedChecks = new HashSet<>();
+    private static final Set<APItem> receivedItems = new HashSet<>();
 
     public static void checkLocation(APLocation location) {
 
@@ -22,7 +23,36 @@ public class APManager {
     }
 
     public static void receiveItem(APItem item) {
-        System.out.println("Received " + item);
+
+        receivedItems.add(item);
+
+        switch (item.getCategory()) {
+            case EQUIPMENT:
+                switch (item.getSubcategory()) {
+                    case POTION:
+                        //add that potion to the possible potions
+                        break;
+                    case SCROLL:
+                        //add the scroll
+                        break;
+                }
+                break;
+            default:
+                GLog.i("[TODO] This item does nothing atm, sorry!");
+        }
+    }
+
+    public static boolean hasItem(APItem item) {
+        return receivedItems.contains(item);
+    }
+
+    public static boolean hasEquipmentType(APItem.Subcategory cat) {
+        for (APItem item : receivedItems) {
+            if(item.getSubcategory() == cat) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

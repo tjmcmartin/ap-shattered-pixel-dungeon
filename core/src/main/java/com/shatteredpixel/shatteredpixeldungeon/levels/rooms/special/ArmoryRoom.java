@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
@@ -75,7 +77,9 @@ public class ArmoryRoom extends SpecialRoom {
 		}
 		
 		entrance.set( Door.Type.LOCKED );
-		level.addItemToSpawn( new IronKey( Dungeon.depth ) );
+		if (APManager.hasItem(APItem.IRON_KEY)) {
+			level.addItemToSpawn(new IronKey(Dungeon.depth));
+		}
 	}
 
 	//only a max of 1 prize from each category can be dropped at a time

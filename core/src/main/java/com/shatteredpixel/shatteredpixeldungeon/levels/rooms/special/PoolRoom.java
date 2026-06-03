@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Piranha;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -87,8 +89,10 @@ public class PoolRoom extends SpecialRoom {
 		int pos = x + y * level.width();
 		level.drop( prize( level ), pos ).type = Heap.Type.CHEST;
 		Painter.set( level, pos, Terrain.PEDESTAL );
-		
-		level.addItemToSpawn( new PotionOfInvisibility() );
+
+		if ( APManager.hasItem(APItem.POTION_OF_INVISIBILITY)) {
+			level.addItemToSpawn(new PotionOfInvisibility());
+		}
 		
 		for (int i=0; i < NPIRANHAS; i++) {
 			Piranha piranha = Piranha.random();

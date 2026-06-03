@@ -25,6 +25,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.CrystalMimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -83,10 +85,14 @@ public class CrystalVaultRoom extends SpecialRoom {
 		Painter.set(level, i1Pos, Terrain.PEDESTAL);
 		Painter.set(level, i2Pos, Terrain.PEDESTAL);
 
-		level.addItemToSpawn( new CrystalKey( Dungeon.depth ) );
+		if ( APManager.hasItem(APItem.CRYSTAL_KEY)) {
+			level.addItemToSpawn(new CrystalKey(Dungeon.depth));
+		}
 		
 		entrance().set( Door.Type.LOCKED );
-		level.addItemToSpawn( new IronKey( Dungeon.depth ) );
+		if (APManager.hasItem(APItem.IRON_KEY)) {
+			level.addItemToSpawn(new IronKey(Dungeon.depth));
+		}
 	}
 	
 	private Item prize() {

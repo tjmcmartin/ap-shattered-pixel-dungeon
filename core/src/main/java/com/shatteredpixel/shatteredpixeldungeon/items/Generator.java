@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.items;
 
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.ClericArmor;
@@ -637,8 +639,16 @@ public class Generator {
 
 	public static void generalReset(){
 		for (Category cat : Category.values()) {
-			categoryProbs.put( cat, usingFirstDeck ? cat.firstProb : cat.secondProb );
-			defaultCatProbs.put( cat, cat.firstProb + cat.secondProb );
+			if (APItem.Subcategory.fromString(cat.name()) == null || APManager.hasEquipmentType(APItem.Subcategory.fromString(cat.name()))) {
+				System.out.println("Category " + cat.name() + " does not need changing");
+				categoryProbs.put(cat, usingFirstDeck ? cat.firstProb : cat.secondProb);
+				defaultCatProbs.put(cat, cat.firstProb + cat.secondProb);
+			}
+			else {
+				System.out.println("Probably for " + cat.name() + " successfully changed!");
+				categoryProbs.put(cat, (float) 0);
+				defaultCatProbs.put(cat, (float) 0);
+			}
 		}
 	}
 

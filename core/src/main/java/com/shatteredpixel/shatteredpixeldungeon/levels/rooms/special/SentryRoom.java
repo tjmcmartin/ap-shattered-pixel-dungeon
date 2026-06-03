@@ -29,6 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Eye;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.NPC;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -166,7 +168,9 @@ public class SentryRoom extends SpecialRoom {
 		Painter.set(level, treasurePos, Terrain.PEDESTAL);
 		level.drop( prize( level ), level.pointToCell(treasurePos) ).type = Heap.Type.CHEST;
 
-		level.addItemToSpawn(new PotionOfHaste());
+		if ( APManager.hasItem(APItem.POTION_OF_HASTE)) {
+			level.addItemToSpawn(new PotionOfHaste());
+		}
 
 		entrance.set( Door.Type.REGULAR );
 	}

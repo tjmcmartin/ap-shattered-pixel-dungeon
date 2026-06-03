@@ -23,6 +23,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Skeleton;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -54,7 +56,9 @@ public class MassGraveRoom extends SpecialRoom {
 
 		Door entrance = entrance();
 		entrance.set(Door.Type.BARRICADE);
-		level.addItemToSpawn(new PotionOfLiquidFlame());
+		if (APManager.hasItem(APItem.POTION_OF_LIQUID_FLAME)) {
+			level.addItemToSpawn(new PotionOfLiquidFlame());
+		}
 
 		Painter.fill(level, this, Terrain.WALL);
 		Painter.fill(level, this, 1, Terrain.CUSTOM_DECO_EMPTY);

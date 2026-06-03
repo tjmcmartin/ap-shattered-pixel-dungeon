@@ -21,6 +21,8 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -54,7 +56,9 @@ public class StorageRoom extends SpecialRoom {
 		}
 		
 		entrance().set( Door.Type.BARRICADE );
-		level.addItemToSpawn( new PotionOfLiquidFlame() );
+		if ( APManager.hasItem(APItem.POTION_OF_LIQUID_FLAME)) {
+			level.addItemToSpawn(new PotionOfLiquidFlame());
+		}
 	}
 	
 	private static Item prize( Level level ) {

@@ -30,6 +30,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Fire;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -109,7 +111,9 @@ public class MagicalFireRoom extends SpecialRoom {
 				level.drop( prize( level ), pos );
 		}
 
-		level.addItemToSpawn(new PotionOfFrost());
+		if ( APManager.hasItem(APItem.POTION_OF_FROST)) {
+			level.addItemToSpawn(new PotionOfFrost());
+		}
 
 	}
 

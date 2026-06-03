@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest.vault.treasure;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.VaultSentry;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -82,7 +84,9 @@ public class VaultManyScansRoom extends VaultTreasureRoom {
 		treasureItem.levelKnown = treasureItem.cursedKnown = true;
 		level.drop(treasureItem, c.x + w*c.y).type = Heap.Type.CHEST;
 
-		level.addItemToSpawn(new PotionOfInvisibility());
+		if (APManager.hasItem(APItem.POTION_OF_INVISIBILITY)) {
+			level.addItemToSpawn(new PotionOfInvisibility());
+		}
 
 	}
 

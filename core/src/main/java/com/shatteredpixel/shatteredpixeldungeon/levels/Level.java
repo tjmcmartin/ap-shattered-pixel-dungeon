@@ -22,6 +22,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.levels;
 
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
@@ -221,11 +223,11 @@ public abstract class Level implements Bundlable {
 
 			addItemToSpawn(Generator.random(Generator.Category.FOOD));
 
-			if (Dungeon.posNeeded()) {
+			if (Dungeon.posNeeded() && APManager.hasItem(APItem.POTION_OF_STRENGTH)) {
 				Dungeon.LimitedDrops.STRENGTH_POTIONS.count++;
 				addItemToSpawn( new PotionOfStrength() );
 			}
-			if (Dungeon.souNeeded()) {
+			if (Dungeon.souNeeded() && APManager.hasItem(APItem.SCROLL_OF_UPGRADE)) {
 				Dungeon.LimitedDrops.UPGRADE_SCROLLS.count++;
 				//every 2nd scroll of upgrade is removed with forbidden runes challenge on
 				//TODO while this does significantly reduce this challenge's levelgen impact, it doesn't quite remove it
@@ -235,7 +237,7 @@ public abstract class Level implements Bundlable {
 					addItemToSpawn(new ScrollOfUpgrade());
 				}
 			}
-			if (Dungeon.asNeeded()) {
+			if (Dungeon.asNeeded() && APManager.hasItem(APItem.ARCANE_STYLUS)) {
 				Dungeon.LimitedDrops.ARCANE_STYLI.count++;
 				addItemToSpawn( new Stylus() );
 			}
