@@ -26,6 +26,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.mechanics.Ballistica;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -83,7 +84,11 @@ public class DM200 extends Mob {
 		if (loot == Generator.Category.WEAPON){
 			return Generator.randomWeapon(4, true);
 		} else {
-			return Generator.randomArmor(4);
+			Item a = Generator.randomArmor(4);
+			if (a == null) {
+				a = new Gold().random();
+			}
+			return a;
 		}
 	}
 

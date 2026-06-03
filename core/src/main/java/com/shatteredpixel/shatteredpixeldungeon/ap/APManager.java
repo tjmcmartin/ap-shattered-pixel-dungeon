@@ -1,7 +1,10 @@
 package com.shatteredpixel.shatteredpixeldungeon.ap;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Random;
@@ -9,7 +12,7 @@ import com.watabou.utils.Random;
 public class APManager {
 
     private static final Set<APLocation> completedChecks = new HashSet<>();
-    private static final Set<APItem> receivedItems = new HashSet<>();
+    private static final HashMap<APItem, Integer> receivedItems = new HashMap<>();
     public static int max_level = 1;
     public static int max_weapon_tier = 1;
     public static int max_armor_tier = 1;
@@ -35,37 +38,53 @@ public class APManager {
 
     public static void receiveItem(APItem item) {
 
-        receivedItems.add(item);
+        if (receivedItems.containsKey(item)) {
+            receivedItems.put(item, receivedItems.get(item) + 1);
+        } else {
+            receivedItems.put(item, 1);
+        }
 
         switch (item.getCategory()) {
             case EQUIPMENT:
                 switch (item.getSubcategory()) {
-                    case POTION:
-
+                    case WEAPONRY:
+                        GLog.i("[TODO] Weaponry does nothing yet");
                         break;
-                    case SCROLL:
-                        //add the scroll
-                        break;
+                    case MISC:
+                        GLog.i("[TODO] case for misc " + item + " does nothing rn!");
+                    default:
+                        Generator.Category cat = Generator.Category.valueOf(item.getSubcategory().name());
+                        cat.defaultProbs[item.id] = cat.maxDefaultProbs[item.id];
+                        if (cat.defaultProbs2 != null) {
+                            cat.defaultProbs2[item.id] = cat.maxDefaultProbs2[item.id];
+                        }
+                        GLog.i("[AP] Probability of " + cat.classes[item.id].getName() + " because of item " + item.name());
                 }
+
                 break;
             case LEVEL:
                 max_level++;
+                Dungeon.hero.earnExp(0, APManager.class);
             default:
                 GLog.i("[TODO] The item " + item + " does nothing atm, sorry!");
         }
     }
 
     public static boolean hasItem(APItem item) {
-        return receivedItems.contains(item);
+        return receivedItems.containsKey(item);
     }
 
     public static boolean hasEquipmentType(APItem.Subcategory cat) {
-        for (APItem item : receivedItems) {
+        for (APItem item : receivedItems.keySet()) {
             if(item.getSubcategory() == cat) {
                 return true;
             }
         }
         return false;
+    }
+
+    public static boolean hasItemLevel(APItem item, int lvl) {
+        return receivedItems.containsKey(item) && receivedItems.get(item) == lvl;
     }
 
 }

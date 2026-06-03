@@ -80,7 +80,7 @@ public class CryptRoom extends SpecialRoom {
 		//1 floor set higher than normal
 		Armor prize = Generator.randomArmor( (Dungeon.depth / 5) + 1);
 		
-		if (Challenges.isItemBlocked(prize)){
+		if (Challenges.isItemBlocked(prize) || prize == null){
 			return new Gold().random();
 		}
 

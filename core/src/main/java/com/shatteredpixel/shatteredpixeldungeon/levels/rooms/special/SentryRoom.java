@@ -34,6 +34,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Beam;
 import com.shatteredpixel.shatteredpixeldungeon.effects.MagicMissile;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -202,17 +203,22 @@ public class SentryRoom extends SpecialRoom {
 				break;
 			case 3: case 4:
 				prize = Generator.randomArmor((Dungeon.depth / 5) + 1);
-				if (((Armor)prize).hasCurseGlyph()){
+				if (prize == null) {
+					prize = new Gold().random();
+				}
+				else if (((Armor)prize).hasCurseGlyph()){
 					((Armor) prize).inscribe(null);
 				}
 				break;
 		}
-		prize.cursed = false;
-		prize.cursedKnown = true;
+		if (!(prize instanceof Gold)) {
+			prize.cursed = false;
+			prize.cursedKnown = true;
 
-		//33% chance for an extra update.
-		if (Random.Int(3) == 0){
-			prize.upgrade();
+			//33% chance for an extra update.
+			if (Random.Int(3) == 0) {
+				prize.upgrade();
+			}
 		}
 
 		return prize;

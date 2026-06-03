@@ -24,6 +24,7 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.secret;
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -105,16 +106,21 @@ public class SecretMazeRoom extends SecretRoom {
 			}
 		} else {
 			prize = Generator.randomArmor((Dungeon.depth / 5) + 1);
-			if (((Armor)prize).hasCurseGlyph()){
+			if (prize == null) {
+				prize = new Gold().random();
+			}
+			else if (((Armor)prize).hasCurseGlyph()){
 				((Armor) prize).inscribe(null);
 			}
 		}
-		prize.cursed = false;
-		prize.cursedKnown = true;
-		
-		//33% chance for an extra update.
-		if (Random.Int(3) == 0){
-			prize.upgrade();
+		if (!(prize instanceof Gold)) {
+			prize.cursed = false;
+			prize.cursedKnown = true;
+
+			//33% chance for an extra update.
+			if (Random.Int(3) == 0) {
+				prize.upgrade();
+			}
 		}
 		
 		level.drop(prize, level.pointToCell(bestDistP)).type = Heap.Type.CHEST;

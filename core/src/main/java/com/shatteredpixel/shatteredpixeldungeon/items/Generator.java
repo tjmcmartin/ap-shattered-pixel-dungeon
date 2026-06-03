@@ -261,6 +261,8 @@ public class Generator {
 		// defaultProbs. If defaultProbs is null then a deck system isn't used.
 		//Artifacts in particular don't reset, no duplicates!
 		public float[] probs;
+		public float[] maxDefaultProbs = null;
+		public float[] maxDefaultProbs2 = null;
 		public float[] defaultProbs = null;
 
 		//some items types have two decks and swap between them
@@ -342,8 +344,12 @@ public class Generator {
 					PotionOfParalyticGas.class,
 					PotionOfPurity.class,
 					PotionOfExperience.class};
-			POTION.defaultProbs  = new float[]{ 0, 3, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1 };
-			POTION.defaultProbs2 = new float[]{ 0, 3, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0 };
+			POTION.maxDefaultProbs  = new float[]{ 0, 3, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1 };
+			POTION.maxDefaultProbs2 = new float[]{ 0, 3, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0 };
+			POTION.defaultProbs = POTION.maxDefaultProbs.clone();
+			Arrays.fill(POTION.defaultProbs, 0);
+			POTION.defaultProbs2 = POTION.maxDefaultProbs2.clone();
+			Arrays.fill(POTION.defaultProbs2, 0);
 			POTION.probs = POTION.defaultProbs.clone();
 			
 			SEED.classes = new Class<?>[]{
@@ -376,8 +382,12 @@ public class Generator {
 					ScrollOfTerror.class,
 					ScrollOfTransmutation.class
 			};
-			SCROLL.defaultProbs  = new float[]{ 0, 3, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1 };
-			SCROLL.defaultProbs2 = new float[]{ 0, 3, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0 };
+			SCROLL.maxDefaultProbs  = new float[]{ 0, 3, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1 };
+			SCROLL.maxDefaultProbs2 = new float[]{ 0, 3, 2, 2, 1, 2, 1, 1, 1, 1, 1, 0 };
+			SCROLL.defaultProbs = SCROLL.maxDefaultProbs.clone();
+			Arrays.fill(SCROLL.defaultProbs, 0);
+			SCROLL.defaultProbs2 = SCROLL.maxDefaultProbs2.clone();
+			Arrays.fill(SCROLL.defaultProbs2, 0);
 			SCROLL.probs = SCROLL.defaultProbs.clone();
 			
 			STONE.classes = new Class<?>[]{
@@ -411,7 +421,9 @@ public class Generator {
 					WandOfTransfusion.class,
 					WandOfCorruption.class,
 					WandOfRegrowth.class };
-			WAND.defaultProbs = new float[]{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
+			WAND.maxDefaultProbs = new float[]{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
+			WAND.defaultProbs = WAND.maxDefaultProbs.clone();
+			Arrays.fill(WAND.defaultProbs, 0);
 			WAND.probs = WAND.defaultProbs.clone();
 			
 			//see generator.randomWeapon
@@ -557,7 +569,9 @@ public class Generator {
 					RingOfSharpshooting.class,
 					RingOfTenacity.class,
 					RingOfWealth.class};
-			RING.defaultProbs = new float[]{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
+			RING.maxDefaultProbs = new float[]{ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
+			RING.defaultProbs = RING.maxDefaultProbs.clone();
+			Arrays.fill(RING.defaultProbs, 0);
 			RING.probs = RING.defaultProbs.clone();
 			
 			ARTIFACT.classes = new Class<?>[]{
@@ -575,7 +589,9 @@ public class Generator {
 					TimekeepersHourglass.class,
 					UnstableSpellbook.class
 			};
-			ARTIFACT.defaultProbs = new float[]{ 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1 };
+			ARTIFACT.maxDefaultProbs = new float[]{ 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1 };
+			ARTIFACT.defaultProbs = ARTIFACT.maxDefaultProbs.clone();
+			Arrays.fill(ARTIFACT.defaultProbs, 0);
 			ARTIFACT.probs = ARTIFACT.defaultProbs.clone();
 
 			//Trinkets are unique like artifacts, but unlike them you can only have one at once
@@ -599,7 +615,9 @@ public class Generator {
 					FerretTuft.class,
 					CrackedSpyglass.class
 			};
-			TRINKET.defaultProbs = new float[]{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+			TRINKET.maxDefaultProbs = new float[]{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
+			TRINKET.defaultProbs = TRINKET.maxDefaultProbs.clone();
+			Arrays.fill(TRINKET.defaultProbs, 0);
 			TRINKET.probs = TRINKET.defaultProbs.clone();
 
 			for (Category cat : Category.values()){
@@ -640,16 +658,8 @@ public class Generator {
 
 	public static void generalReset(){
 		for (Category cat : Category.values()) {
-			if (APItem.Subcategory.fromString(cat.name()) == null || APManager.hasEquipmentType(APItem.Subcategory.fromString(cat.name()))) {
-				System.out.println("Category " + cat.name() + " does not need changing");
-				categoryProbs.put(cat, usingFirstDeck ? cat.firstProb : cat.secondProb);
-				defaultCatProbs.put(cat, cat.firstProb + cat.secondProb);
-			}
-			else {
-				System.out.println("Probably for " + cat.name() + " successfully changed!");
-				categoryProbs.put(cat, (float) 0);
-				defaultCatProbs.put(cat, (float) 0);
-			}
+			categoryProbs.put(cat, usingFirstDeck ? cat.firstProb : cat.secondProb);
+			defaultCatProbs.put(cat, cat.firstProb + cat.secondProb);
 		}
 	}
 
@@ -735,24 +745,26 @@ public class Generator {
 					reset(cat);
 					i = Random.chances(cat.probs);
 				}
-				if (cat.defaultProbs != null) cat.probs[i]--;
-				Class<?> itemCls = cat.classes[i];
+				Class<?> itemCls = Category.GOLD.classes[0];
+				if (i != -1) {
+					if (cat.defaultProbs != null) cat.probs[i]--;
+					itemCls = cat.classes[i];
 
-				if (cat.defaultProbs != null && cat.seed != null){
-					Random.popGenerator();
-					cat.dropped++;
-				}
-
-				if (ExoticPotion.regToExo.containsKey(itemCls)){
-					if (Random.Float() < ExoticCrystals.consumableExoticChance()){
-						itemCls = ExoticPotion.regToExo.get(itemCls);
+					if (cat.defaultProbs != null && cat.seed != null) {
+						Random.popGenerator();
+						cat.dropped++;
 					}
-				} else if (ExoticScroll.regToExo.containsKey(itemCls)){
-					if (Random.Float() < ExoticCrystals.consumableExoticChance()){
-						itemCls = ExoticScroll.regToExo.get(itemCls);
+
+					if (ExoticPotion.regToExo.containsKey(itemCls)) {
+						if (Random.Float() < ExoticCrystals.consumableExoticChance()) {
+							itemCls = ExoticPotion.regToExo.get(itemCls);
+						}
+					} else if (ExoticScroll.regToExo.containsKey(itemCls)) {
+						if (Random.Float() < ExoticCrystals.consumableExoticChance()) {
+							itemCls = ExoticScroll.regToExo.get(itemCls);
+						}
 					}
 				}
-
 				return ((Item) Reflection.newInstance(itemCls)).random();
 		}
 	}
@@ -796,8 +808,15 @@ public class Generator {
 	public static Armor randomArmor(int floorSet) {
 
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);
-		
-		Armor a = (Armor)Reflection.newInstance(Category.ARMOR.classes[Random.chances(floorSetTierProbs[floorSet])]);
+
+		int tier = Random.chances(floorSetTierProbs[floorSet]);
+		while (!APManager.hasItemLevel(APItem.PROGRESSIVE_ARMOR, tier)) {
+			tier--;
+			if (tier <= 0) {
+				return null;
+			}
+		}
+		Armor a = (Armor)Reflection.newInstance(Category.ARMOR.classes[tier]);
 		a.random();
 		return a;
 	}

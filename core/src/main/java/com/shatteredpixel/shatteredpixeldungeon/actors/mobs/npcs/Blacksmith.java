@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DarkGold;
@@ -381,7 +382,11 @@ public class Blacksmith extends NPC {
 				Generator.undoDrop(i);
 			}
 			smithRewards.add(Generator.randomMissile(3, useDecks));
-			smithRewards.add(Generator.randomArmor(3));
+			Item a = Generator.randomArmor(3);
+			if (a == null) {
+				a = new Gold().random();
+			}
+			smithRewards.add(a);
 
 			//30%:+0, 45%:+1, 20%:+2, 5%:+3
 			int rewardLevel;

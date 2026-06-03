@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
@@ -145,16 +146,21 @@ public class TrapsRoom extends SpecialRoom {
 			}
 		} else {
 			prize = Generator.randomArmor((Dungeon.depth / 5) + 1);
-			if (((Armor)prize).hasCurseGlyph()){
+			if (prize == null) {
+				prize = new Gold().random();
+			}
+			else if (((Armor)prize).hasCurseGlyph()){
 				((Armor) prize).inscribe(null);
 			}
 		}
-		prize.cursed = false;
-		prize.cursedKnown = true;
+		if (!(prize instanceof Gold)) {
+			prize.cursed = false;
+			prize.cursedKnown = true;
 
-		//33% chance for an extra update.
-		if (Random.Int(3) == 0){
-			prize.upgrade();
+			//33% chance for an extra update.
+			if (Random.Int(3) == 0) {
+				prize.upgrade();
+			}
 		}
 		
 		return prize;
