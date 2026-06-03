@@ -1,5 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.ap;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public enum APItem {
 
     WARRIOR (Category.CHARACTER, null),
@@ -103,7 +106,7 @@ public enum APItem {
     SCROLL_OF_TRANSMUTATION (Category.EQUIPMENT, Subcategory.SCROLL),
     ARCANE_STYLUS (Category.EQUIPMENT, Subcategory.MISC),
     TORCHES (Category.EQUIPMENT, Subcategory.MISC),
-    WATERSKIN (Category.EQUIPMENT, null),
+    WATERSKIN (Category.EQUIPMENT, Subcategory.MISC),
     RAT_SKULL (Category.TRINKET, null),
     PARCHMENT_SCRAP (Category.TRINKET, null),
     PETRIFIED_SEED (Category.TRINKET, null),
@@ -125,7 +128,7 @@ public enum APItem {
     POTION_BANDOLIER (Category.EXPANDER, null),
     SCROLL_HOLDER (Category.EXPANDER, null),
     MAGICAL_HOLSTER (Category.EXPANDER, null),
-    PROGRESSIVE_MAX_LEVEL (null, null),
+    PROGRESSIVE_MAX_LEVEL (Category.LEVEL, null),
     IRON_KEY (Category.KEY, null),
     GOLD_KEY (Category.KEY, null),
     CRYSTAL_KEY (Category.KEY, null);
@@ -139,6 +142,7 @@ public enum APItem {
         KEY,
         EXPANDER,
         SKILL,
+        LEVEL,
         ACTION;
 
         public static Category fromString(String name) {
@@ -194,6 +198,37 @@ public enum APItem {
             }
         }
         return null;
+    }
+
+    public static List<APItem> getByCategory(Category category) {
+        List<APItem> result = new ArrayList<>();
+
+        for (APItem item : values()) {
+            if (item.category == category) {
+                result.add(item);
+            }
+        }
+
+        return result;
+    }
+
+    public static List<APItem> getBySubcategory(Subcategory subcategory) {
+        List<APItem> result = new ArrayList<>();
+
+        for (APItem item : values()) {
+            if (item.subcategory == subcategory) {
+                result.add(item);
+            }
+        }
+
+        return result;
+    }
+
+    public static String classToEnum(String className) {
+
+        return className
+                .replaceAll("([a-z])([A-Z])", "$1_$2")
+                .toUpperCase();
     }
 
 }

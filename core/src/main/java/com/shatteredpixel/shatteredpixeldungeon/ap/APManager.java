@@ -4,11 +4,16 @@ import java.util.HashSet;
 import java.util.Set;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.watabou.utils.Random;
 
 public class APManager {
 
     private static final Set<APLocation> completedChecks = new HashSet<>();
     private static final Set<APItem> receivedItems = new HashSet<>();
+    public static int max_level = 1;
+    public static int max_weapon_tier = 1;
+    public static int max_armor_tier = 1;
+    public static int max_missile_tier = 1;
 
     public static void checkLocation(APLocation location) {
 
@@ -18,8 +23,14 @@ public class APManager {
 
         completedChecks.add(location);
 
+
+        APItem randItem = APItem.values()[Random.Int(APItem.values().length)];
+
+
         //TODO fix once ap side integrated
-        GLog.w("[AP] " + Messages.get(APManager.class, "item_sent", "item", "player"));
+        GLog.w("[AP] " + Messages.get(APManager.class, "item_sent", randItem, "player"));
+
+        receiveItem(randItem);
     }
 
     public static void receiveItem(APItem item) {
@@ -30,15 +41,17 @@ public class APManager {
             case EQUIPMENT:
                 switch (item.getSubcategory()) {
                     case POTION:
-                        //add that potion to the possible potions
+
                         break;
                     case SCROLL:
                         //add the scroll
                         break;
                 }
                 break;
+            case LEVEL:
+                max_level++;
             default:
-                GLog.i("[TODO] This item does nothing atm, sorry!");
+                GLog.i("[TODO] The item " + item + " does nothing atm, sorry!");
         }
     }
 

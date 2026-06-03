@@ -331,7 +331,7 @@ public class StatusPane extends Component {
 		}
 
 		if (large) {
-			exp.scale.x = (128 / exp.width) * Dungeon.hero.exp / Dungeon.hero.maxExp();
+			exp.scale.x = (128 / exp.width) * Math.min(Dungeon.hero.exp, Dungeon.hero.maxExp()) / Dungeon.hero.maxExp();
 
 			hpText.measure();
 			hpText.x = hp.x + (128 - hpText.width())/2f;
@@ -341,7 +341,7 @@ public class StatusPane extends Component {
 			expText.x = hp.x + (128 - expText.width())/2f;
 
 		} else {
-			exp.scale.x = ((17 + heroPaneExtraWidth) / exp.width) * Dungeon.hero.exp / Dungeon.hero.maxExp();
+			exp.scale.x = ((17 + heroPaneExtraWidth) / exp.width) * Math.min(Dungeon.hero.exp, Dungeon.hero.maxExp()) / Dungeon.hero.maxExp();
 			expText.text(Dungeon.hero.exp + "/" + Dungeon.hero.maxExp());
 		}
 

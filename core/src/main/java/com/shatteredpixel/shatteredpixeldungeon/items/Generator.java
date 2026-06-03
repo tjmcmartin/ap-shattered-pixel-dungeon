@@ -217,6 +217,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public class Generator {
 
@@ -659,6 +660,12 @@ public class Generator {
 				cat.probs = cat.using2ndProbs ? cat.defaultProbs2.clone() : cat.defaultProbs.clone();
 			} else {
 				cat.probs = cat.defaultProbs.clone();
+			}
+			List<APItem> apItems = APItem.getBySubcategory(APItem.Subcategory.fromString(cat.name()));
+			for (int i=0; i<cat.probs.length-1; ++i) {
+				if (APManager.hasItem( APItem.fromString( APItem.classToEnum( cat.classes[i].getName() ) ) ) ) {
+					cat.probs[i] = 0;
+				}
 			}
 		}
 	}
