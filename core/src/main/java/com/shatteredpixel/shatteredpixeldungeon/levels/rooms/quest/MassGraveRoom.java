@@ -92,6 +92,9 @@ public class MassGraveRoom extends SpecialRoom {
 
 		for (Item item : items){
 			int pos;
+			if (item == null) {
+				item = new Gold().random();
+			}
 			do {
 				pos = level.pointToCell(random());
 			} while (level.map[pos] != Terrain.CUSTOM_DECO_EMPTY || level.heaps.get(pos) != null);

@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.bombs.Bomb;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
@@ -86,16 +87,25 @@ public class ArmoryRoom extends SpecialRoom {
 	private static float[] prizeCats;
 	private static Item prize( Level level ) {
 		int index = Random.chances(prizeCats);
+		Item prize;
 		prizeCats[index] = 0;
 		switch (index){
 			case 0:
 				return new Bomb().random();
 			case 1:
-				return Generator.randomWeapon();
+				prize = Generator.randomWeapon();
+				break;
 			case 2:
-				return Generator.randomArmor();
+				prize = Generator.randomArmor();
+				break;
 			case 3: default:
-				return Generator.randomMissile();
+				prize = Generator.randomMissile();
+				break;
 		}
+
+		if (prize == null) {
+			prize = new Gold().random();
+		}
+		return prize;
 	}
 }

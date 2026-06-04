@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShaftParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.items.weapon.Weapon;
@@ -61,16 +62,21 @@ public class TormentedSpirit extends Wraith {
 		Item prize;
 		if (Random.Int(2) == 0){
 			prize = Generator.randomWeapon(true);
-			((Weapon)prize).enchant();
+			if (prize != null)			((Weapon)prize).enchant();
 		} else {
 			prize = Generator.randomArmor();
-			((Armor) prize).inscribe();
+			if (prize != null)			((Armor) prize).inscribe();
 		}
-		prize.cursed = false;
-		prize.cursedKnown = true;
+		if (prize == null) {
+			prize = new Gold().random();
+		}
+		else {
+			prize.cursed = false;
+			prize.cursedKnown = true;
 
-		if (prize.level() == 0 && Random.Int(2) == 0){
-			prize.upgrade();
+			if (prize.level() == 0 && Random.Int(2) == 0) {
+				prize.upgrade();
+			}
 		}
 
 		Dungeon.level.drop(prize, pos).sprite.drop();

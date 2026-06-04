@@ -456,7 +456,9 @@ public abstract class RegularLevel extends Level {
 			if (item instanceof TrinketCatalyst){
 				drop( item, cell ).type = Heap.Type.LOCKED_CHEST;
 				int keyCell = randomDropCell();
-				drop( new GoldenKey(Dungeon.depth), keyCell ).type = Heap.Type.HEAP;
+				if (APManager.hasItem(APItem.GOLD_KEY)) {
+					drop(new GoldenKey(Dungeon.depth), keyCell).type = Heap.Type.HEAP;
+				}
 				if (map[keyCell] == Terrain.HIGH_GRASS || map[keyCell] == Terrain.FURROWED_GRASS) {
 					map[keyCell] = Terrain.GRASS;
 					losBlocking[keyCell] = false;

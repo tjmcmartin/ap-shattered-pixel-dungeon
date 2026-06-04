@@ -141,7 +141,10 @@ public class TrapsRoom extends SpecialRoom {
 		//1 floor set higher in probability, never cursed
 		if (Random.Int(2) == 0) {
 			prize = Generator.randomWeapon((Dungeon.depth / 5) + 1);
-			if (((Weapon)prize).hasCurseEnchant()){
+			if (prize == null) {
+				prize = new Gold().random();
+			}
+			else if (((Weapon)prize).hasCurseEnchant()){
 				((Weapon) prize).enchant(null);
 			}
 		} else {

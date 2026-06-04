@@ -370,18 +370,35 @@ public class Blacksmith extends NPC {
 
 		public static void generateRewards( boolean useDecks ){
 			smithRewards = new ArrayList<>();
-			smithRewards.add(Generator.randomWeapon(3, useDecks));
-			smithRewards.add(Generator.randomWeapon(3, useDecks));
+			Item w = Generator.randomWeapon(3, useDecks);
+			if (w == null) {
+				w = new Gold().random();
+			}
+			smithRewards.add(w);
+			w = Generator.randomWeapon(3, useDecks);
+			if (w == null) {
+				w = new Gold().random();
+			}
+			smithRewards.add(w);
 			ArrayList<Item> toUndo = new ArrayList<>();
-			while (smithRewards.get(0).getClass() == smithRewards.get(1).getClass()) {
+			while (smithRewards.get(0).getClass() == smithRewards.get(1).getClass() && smithRewards.get(1).getClass() != Gold.class) {
 				if (useDecks)   toUndo.add(smithRewards.get(1));
 				smithRewards.remove(1);
-				smithRewards.add(Generator.randomWeapon(3, useDecks));
+				w = Generator.randomWeapon(3, useDecks);
+				if (w == null) {
+					w = new Gold().random();
+				}
+				smithRewards.add(w);
 			}
 			for (Item i : toUndo){
 				Generator.undoDrop(i);
 			}
-			smithRewards.add(Generator.randomMissile(3, useDecks));
+
+			Item m = Generator.randomMissile(3, useDecks);
+			if (m == null) {
+				m = new Gold().random();
+			}
+			smithRewards.add(m);
 			Item a = Generator.randomArmor(3);
 			if (a == null) {
 				a = new Gold().random();

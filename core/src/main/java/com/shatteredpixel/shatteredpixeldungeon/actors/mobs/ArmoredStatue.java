@@ -50,7 +50,7 @@ public class ArmoredStatue extends Statue {
 	public void createWeapon(boolean useDecks) {
 		super.createWeapon(useDecks);
 
-		armor = Generator.randomArmor();
+		armor = Generator.randomArmor(false);
 		armor.cursed = false;
 		armor.inscribe(Armor.Glyph.random());
 	}

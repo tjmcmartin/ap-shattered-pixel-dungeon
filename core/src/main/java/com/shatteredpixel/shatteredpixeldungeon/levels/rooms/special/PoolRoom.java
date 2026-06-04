@@ -119,13 +119,19 @@ public class PoolRoom extends SpecialRoom {
 		switch (Random.Int(5)){
 			case 0: case 1: default:
 				prize = Generator.randomWeapon((Dungeon.depth / 5) + 1);
-				if (((Weapon)prize).hasCurseEnchant()){
+				if (prize == null) {
+					prize = new Gold().random();
+				}
+				else if (((Weapon)prize).hasCurseEnchant()){
 					((Weapon) prize).enchant(null);
 				}
 				break;
 			case 2:
 				prize = Generator.randomMissile((Dungeon.depth / 5) + 1);
-				if (((Weapon)prize).hasCurseEnchant()){
+				if (prize == null) {
+					prize = new Gold().random();
+				}
+				else if (((Weapon)prize).hasCurseEnchant()){
 					((Weapon) prize).enchant(null);
 				}
 				break;

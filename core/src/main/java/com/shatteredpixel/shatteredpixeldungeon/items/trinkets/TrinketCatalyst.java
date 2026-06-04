@@ -27,6 +27,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
@@ -174,11 +175,11 @@ public class TrinketCatalyst extends Item {
 			add( message );
 
 			//roll new trinkets if trinkets were not already rolled
-			while (cata.rolledTrinkets.size() < NUM_TRINKETS){
+			while (cata.rolledTrinkets.size() < NUM_TRINKETS || cata.rolledTrinkets.size() >= APManager.availableTrinkets.size()){
 				cata.rolledTrinkets.add((Trinket) Generator.random(Generator.Category.TRINKET));
 			}
 
-			for (int i = 0; i < NUM_TRINKETS; i++){
+			for (int i = 0; i < cata.rolledTrinkets.size(); i++){
 				ItemButton btnReward = new ItemButton() {
 					@Override
 					protected void onClick() {

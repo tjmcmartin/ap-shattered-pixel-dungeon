@@ -219,6 +219,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import javax.swing.MenuElement;
+
 public class Generator {
 
 	public enum Category {
@@ -699,7 +701,7 @@ public class Generator {
 		}
 	}
 	
-	public static Item random() {
+	public static Item random(boolean forPlayer) {
 		Category cat = Random.chances( categoryProbs );
 		if (cat == null){
 			usingFirstDeck = !usingFirstDeck;
@@ -714,20 +716,32 @@ public class Generator {
 			// of seed drops still use a deck, but the few that are spawned by levelgen are consistent
 			return randomUsingDefaults(cat);
 		} else {
-			return random(cat);
+			return random(cat, forPlayer);
 		}
 	}
 
 	public static Item randomUsingDefaults(){
 		return randomUsingDefaults(Random.chances( defaultCatProbs ));
 	}
-	
-	public static Item random( Category cat ) {
+
+	public static Item randomUsingDefaults(Category cat) {
+		return  randomUsingDefaults(cat, true);
+	}
+
+	public static Item random() {
+		return random(true);
+	}
+
+	public static Item random( Category cat) {
+		return random(cat, true);
+	}
+
+	public static Item random( Category cat , boolean forPLayer) {
 		switch (cat) {
 			case ARMOR:
 				return randomArmor();
 			case WEAPON:
-				return randomWeapon();
+				return randomWeapon(false, forPLayer);
 			case MISSILE:
 				return randomMissile();
 			case ARTIFACT:
@@ -745,6 +759,7 @@ public class Generator {
 					reset(cat);
 					i = Random.chances(cat.probs);
 				}
+
 				Class<?> itemCls = Category.GOLD.classes[0];
 				if (i != -1) {
 					if (cat.defaultProbs != null) cat.probs[i]--;
@@ -771,15 +786,16 @@ public class Generator {
 
 	//overrides any deck systems and always uses default probs
 	// except for artifacts, which must always use a deck
-	public static Item randomUsingDefaults( Category cat ){
+	public static Item randomUsingDefaults( Category cat, boolean forPlayer ){
 		if (cat == Category.WEAPON){
-			return randomWeapon(true);
+			return randomWeapon(true, forPlayer);
 		} else if (cat == Category.MISSILE){
 			return randomMissile(true);
 		} else if (cat.defaultProbs == null || cat == Category.ARTIFACT) {
 			return random(cat);
 		} else if (cat.defaultProbsTotal != null){
-			return ((Item) Reflection.newInstance(cat.classes[Random.chances(cat.defaultProbsTotal)])).random();
+			int n = Random.chances(cat.defaultProbsTotal);
+			return ((Item) ((n != -1) ? Reflection.newInstance(cat.classes[n]) : new Gold())).random();
 		} else {
 			Class<?> itemCls = cat.classes[Random.chances(cat.defaultProbs)];
 
@@ -804,13 +820,21 @@ public class Generator {
 	public static Armor randomArmor(){
 		return randomArmor(Dungeon.depth / 5);
 	}
-	
+
+	public static Armor randomArmor(boolean forPlayer) {
+		return randomArmor(Dungeon.depth / 5, forPlayer);
+	}
+
 	public static Armor randomArmor(int floorSet) {
+		return randomArmor(floorSet, true);
+	}
+	
+	public static Armor randomArmor(int floorSet, boolean forPlayer) {
 
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);
 
 		int tier = Random.chances(floorSetTierProbs[floorSet]);
-		while (!APManager.hasItemLevel(APItem.PROGRESSIVE_ARMOR, tier)) {
+		while (forPlayer && tier > APManager.max_armor_tier) {
 			tier--;
 			if (tier <= 0) {
 				return null;
@@ -834,22 +858,38 @@ public class Generator {
 	}
 
 	public static MeleeWeapon randomWeapon(int floorSet) {
-		return randomWeapon(floorSet, false);
+		return randomWeapon(floorSet, false, true);
 	}
 
 	public static MeleeWeapon randomWeapon(boolean useDefaults) {
-		return randomWeapon(Dungeon.depth / 5, useDefaults);
+		return randomWeapon(Dungeon.depth / 5, useDefaults, true);
+	}
+
+	public static MeleeWeapon randomWeapon(int floorSet, boolean useDefaults) {
+		return randomWeapon(floorSet, useDefaults, true);
+	}
+
+	public static MeleeWeapon randomWeapon(boolean useDefaults, boolean forPlayer) {
+		return randomWeapon(Dungeon.depth / 5, useDefaults, forPlayer);
 	}
 	
-	public static MeleeWeapon randomWeapon(int floorSet, boolean useDefaults) {
+	public static MeleeWeapon randomWeapon(int floorSet, boolean useDefaults, boolean forPlayer) {
 
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);
 
+		int tier = Random.chances(floorSetTierProbs[floorSet]);
+		while (forPlayer && tier > APManager.max_weapon_tier) {
+			tier--;
+			if (tier <= 0) {
+				return null;
+			}
+		}
+
 		MeleeWeapon w;
 		if (useDefaults){
-			w = (MeleeWeapon) randomUsingDefaults(wepTiers[Random.chances(floorSetTierProbs[floorSet])]);
+			w = (MeleeWeapon) randomUsingDefaults(wepTiers[tier]);
 		} else {
-			w = (MeleeWeapon) random(wepTiers[Random.chances(floorSetTierProbs[floorSet])]);
+			w = (MeleeWeapon) random(wepTiers[tier]);
 		}
 		return w;
 	}

@@ -46,6 +46,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.rogue.Smok
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Endure;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.HeroicLeap;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.warrior.Shockwave;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.BrokenSeal;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.Waterskin;
@@ -108,11 +110,16 @@ public enum HeroClass {
 		i = new Food();
 		if (!Challenges.isItemBlocked(i)) i.collect();
 
-		new VelvetPouch().collect();
-		Dungeon.LimitedDrops.VELVET_POUCH.drop();
+		if (APManager.hasItem(APItem.VELVET_POUCH)) {
+			new VelvetPouch().collect();
+			Dungeon.LimitedDrops.VELVET_POUCH.drop();
+		}
 
-		Waterskin waterskin = new Waterskin();
-		waterskin.collect();
+		Waterskin waterskin = null;
+		if (APManager.hasItem(APItem.WATERSKIN)) {
+			waterskin = new Waterskin();
+			waterskin.collect();
+		}
 
 		new ScrollOfIdentify().identify();
 
@@ -144,7 +151,7 @@ public enum HeroClass {
 
 		if (SPDSettings.quickslotWaterskin()) {
 			for (int s = 0; s < QuickSlot.SIZE; s++) {
-				if (Dungeon.quickslot.getItem(s) == null) {
+				if (Dungeon.quickslot.getItem(s) == null && waterskin != null) {
 					Dungeon.quickslot.setSlot(s, waterskin);
 					break;
 				}
@@ -173,10 +180,12 @@ public enum HeroClass {
 
 	private static void initWarrior( Hero hero ) {
 		(hero.belongings.weapon = new WornShortsword()).identify();
-		ThrowingStone stones = new ThrowingStone();
-		stones.identify().collect();
+		if (APManager.hasItem(APItem.PROGRESSIVE_MISSILE)) {
+			ThrowingStone stones = new ThrowingStone();
+			stones.identify().collect();
 
-		Dungeon.quickslot.setSlot(0, stones);
+			Dungeon.quickslot.setSlot(0, stones);
+		}
 
 		if (hero.belongings.armor != null){
 			hero.belongings.armor.affixSeal(new BrokenSeal());
@@ -208,11 +217,14 @@ public enum HeroClass {
 		(hero.belongings.artifact = cloak).identify();
 		hero.belongings.artifact.activate( hero );
 
-		ThrowingKnife knives = new ThrowingKnife();
-		knives.identify().collect();
+		if (APManager.hasItem(APItem.PROGRESSIVE_MISSILE)) {
+			ThrowingKnife knives = new ThrowingKnife();
+			knives.identify().collect();
+
+			Dungeon.quickslot.setSlot(1, knives);
+		}
 
 		Dungeon.quickslot.setSlot(0, cloak);
-		Dungeon.quickslot.setSlot(1, knives);
 
 		new ScrollOfMagicMapping().identify();
 		new PotionOfInvisibility().identify();
@@ -235,11 +247,14 @@ public enum HeroClass {
 		(hero.belongings.weapon = new Rapier()).identify();
 		hero.belongings.weapon.activate(hero);
 
-		ThrowingSpike spikes = new ThrowingSpike();
-		spikes.quantity(2).identify().collect(); //set quantity is 3, but Duelist starts with 2
+		if (APManager.hasItem(APItem.PROGRESSIVE_MISSILE)) {
+			ThrowingSpike spikes = new ThrowingSpike();
+			spikes.quantity(2).identify().collect(); //set quantity is 3, but Duelist starts with 2
+
+			Dungeon.quickslot.setSlot(1, spikes);
+		}
 
 		Dungeon.quickslot.setSlot(0, hero.belongings.weapon);
-		Dungeon.quickslot.setSlot(1, spikes);
 
 		new PotionOfStrength().identify();
 		new ScrollOfMirrorImage().identify();

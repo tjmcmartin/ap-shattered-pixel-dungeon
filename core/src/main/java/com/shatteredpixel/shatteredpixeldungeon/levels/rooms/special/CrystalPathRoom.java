@@ -25,6 +25,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.CrystalKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.potions.PotionOfExperience;
@@ -44,6 +45,7 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 
 public class CrystalPathRoom extends SpecialRoom {
 
@@ -257,11 +259,17 @@ public class CrystalPathRoom extends SpecialRoom {
 
 	//this prevents duplicates
 	public void addRewardItem(Generator.Category cat, ArrayList<Item> items, ArrayList<Item> dupes){
+		HashSet<APItem> choices = APManager.availableItems.get( APItem.Subcategory.fromString(cat.name()) );
+		int n = 0; //failsafe counter
 		while (true) {
 			Item reward = Generator.random(cat);
-
 			//we have to de-exotify for comparison here to weed out duplicates
 			Class rewardClass = reward.getClass();
+			if (rewardClass == Gold.class || choices.isEmpty() || n > 50) {
+				System.out.println("This took " + n + " loops!");
+				items.add(reward);
+				return;
+			}
 			if (reward instanceof ExoticPotion){
 				rewardClass = ExoticPotion.exoToReg.get(rewardClass);
 			} else if (reward instanceof ExoticScroll){
@@ -279,6 +287,7 @@ public class CrystalPathRoom extends SpecialRoom {
 				if (iClass == rewardClass){
 					dupes.add(reward);
 					dupe = true;
+					choices.remove(APItem.fromString( APItem.classToEnum(iClass.getName()) ));
 					break;
 				}
 			}
@@ -287,6 +296,7 @@ public class CrystalPathRoom extends SpecialRoom {
 				items.add(reward);
 				return;
 			}
+			n++;
 		}
 	}
 
