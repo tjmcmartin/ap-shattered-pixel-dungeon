@@ -49,7 +49,9 @@ public class MeatPie extends Food {
 	}
 	
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
-		
+
+		public final int alchemyLevel = 3;
+
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
 			boolean pasty = false;

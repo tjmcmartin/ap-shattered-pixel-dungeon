@@ -850,7 +850,7 @@ public abstract class Mob extends Char {
 				Bestiary.setSeen(getClass());
 				Bestiary.countEncounter(getClass());
 
-				APLocation location = APLocation.fromString("DEFEAT_" + getClass().getSimpleName());
+				APLocation location = APLocation.fromString(Dungeon.hero.heroClass.name().toUpperCase() + "_DEFEAT_" + getClass().getSimpleName());
 				if (location != null) {
 					APManager.checkLocation(location);
 				}

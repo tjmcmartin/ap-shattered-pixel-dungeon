@@ -190,6 +190,8 @@ public class LiquidMetal extends Item {
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
 
+		public final int alchemyLevel = 7;
+
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
 			return ingredients.size() == 1

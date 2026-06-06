@@ -218,8 +218,6 @@ public class TitleScene extends PixelScene {
 		GAP /= landscape() ? 4 : 6;
 		GAP = Math.max(GAP, 2);
 
-		System.out.println("h="+h+" topRegion="+topRegion+" Gap="+GAP);
-
 		float buttonAreaWidth = landscape() ? PixelScene.MIN_WIDTH_L-6 : PixelScene.MIN_WIDTH_P-2;
 		float btnAreaLeft = insets.left + (w - buttonAreaWidth) / 2f;
 		if (landscape()) {

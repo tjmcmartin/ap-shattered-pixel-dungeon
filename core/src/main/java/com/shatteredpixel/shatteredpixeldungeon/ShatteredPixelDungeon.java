@@ -21,6 +21,10 @@
 
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import com.shatteredpixel.shatteredpixeldungeon.items.spells.BeaconOfReturning;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Bestiary;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Catalog;
+import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.TitleScene;
@@ -67,7 +71,33 @@ public class ShatteredPixelDungeon extends Game {
 		Sample.INSTANCE.volume( SPDSettings.SFXVol()*SPDSettings.SFXVol()/100f );
 
 		Sample.INSTANCE.load( Assets.Sounds.all );
-		
+
+		//Give the player a 100% save
+		//Unlock badges
+		Badges.loadGlobal();
+		for (Badges.Badge badge : Badges.Badge.values()) {
+			Badges.unlock(badge);
+		}
+		SPDSettings.victoryNagged(true);
+
+		//Unlock all the categories in the Journal
+		for (Catalog cat : Catalog.values()) {
+			for (Class<?> cls : cat.seen.keySet() ) {
+				if (!cat.seen.get(cls)) {
+					cat.seen.put(cls, true);
+
+				}
+			}
+		}
+
+		for (Bestiary cat : Bestiary.values()) {
+			for (Class<?> cls : cat.seen.keySet()) {
+				if (!cat.seen.get(cls)) {
+					cat.seen.put(cls, true);
+				}
+			}
+		}
+
 	}
 
 	@Override

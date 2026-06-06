@@ -834,6 +834,9 @@ public class Hero extends Char {
 		//calls to dungeon.observe will also update hero's local FOV.
 		fieldOfView = Dungeon.level.heroFOV;
 
+		//process queued AP Items
+		APManager.processPendingItems();
+
 		if (buff(Endure.EndureTracker.class) != null){
 			buff(Endure.EndureTracker.class).endEnduring();
 		}
@@ -2013,7 +2016,7 @@ public class Hero extends Char {
 		}
 		
 		boolean levelUp = false;
-		while (this.exp >= maxExp() && lvl < APManager.max_level) {
+		while (this.exp >= maxExp() && lvl < APManager.getMaxLevel(heroClass)) {
 			this.exp -= maxExp();
 
 			if (buff(Talent.WandPreservationCounter.class) != null

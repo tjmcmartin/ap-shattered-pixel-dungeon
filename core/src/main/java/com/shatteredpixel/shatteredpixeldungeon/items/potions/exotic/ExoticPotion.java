@@ -124,6 +124,8 @@ public class ExoticPotion extends Potion {
 
 	public static class PotionToExotic extends Recipe{
 
+		public final int alchemyLevel = 4;
+
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
 			if (ingredients.size() == 1 && regToExo.containsKey(ingredients.get(0).getClass())){

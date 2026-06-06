@@ -108,6 +108,8 @@ public abstract class Trinket extends Item {
 
 	public static class UpgradeTrinket extends Recipe {
 
+		public final int alchemyLevel = 1;
+
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
 			return ingredients.size() == 1 && ingredients.get(0) instanceof Trinket && ingredients.get(0).level() < 3;

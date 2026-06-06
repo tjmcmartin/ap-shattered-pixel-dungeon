@@ -38,6 +38,9 @@ public class StewedMeat extends Food {
 	}
 	
 	public static class oneMeat extends Recipe.SimpleRecipe{
+
+		public final int alchemyLevel = 3;
+
 		{
 			inputs =  new Class[]{MysteryMeat.class};
 			inQuantity = new int[]{1};
@@ -50,6 +53,9 @@ public class StewedMeat extends Food {
 	}
 	
 	public static class twoMeat extends Recipe.SimpleRecipe{
+
+		public final int alchemyLevel = 3;
+
 		{
 			inputs =  new Class[]{MysteryMeat.class};
 			inQuantity = new int[]{2};
@@ -65,6 +71,9 @@ public class StewedMeat extends Food {
 	//blue meat
 	
 	public static class threeMeat extends Recipe.SimpleRecipe{
+
+		public final int alchemyLevel = 3;
+
 		{
 			inputs =  new Class[]{MysteryMeat.class};
 			inQuantity = new int[]{3};

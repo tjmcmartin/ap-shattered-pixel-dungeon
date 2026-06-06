@@ -68,8 +68,10 @@ public class ElixirOfMight extends Elixir {
 	}
 	
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
-		
-		{
+
+		public final int alchemyLevel = 8;
+
+				{
 			inputs =  new Class[]{PotionOfStrength.class};
 			inQuantity = new int[]{1};
 			

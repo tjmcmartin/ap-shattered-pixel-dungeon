@@ -132,7 +132,9 @@ public class UnstableBrew extends Brew {
 	}
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
-		
+
+		public final int alchemyLevel = 8;
+
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
 			boolean potion = false;

@@ -79,6 +79,8 @@ public class Alchemize extends Spell {
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
 
+		public final int alchemyLevel = 9;
+
 		private static final int OUT_QUANTITY = 8;
 
 		@Override

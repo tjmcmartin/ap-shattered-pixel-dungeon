@@ -72,6 +72,7 @@ public abstract class Recipe {
 	public abstract Item brew(ArrayList<Item> ingredients);
 	
 	public abstract Item sampleOutput(ArrayList<Item> ingredients);
+	public final int alchemyLevel = 1;
 	
 	//subclass for the common situation of a recipe with static inputs and outputs
 	public static abstract class SimpleRecipe extends Recipe {

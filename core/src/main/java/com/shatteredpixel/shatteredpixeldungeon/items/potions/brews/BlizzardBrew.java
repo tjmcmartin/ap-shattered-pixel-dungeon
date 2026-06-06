@@ -58,8 +58,10 @@ public class BlizzardBrew extends Brew {
 	}
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
-		
-		{
+
+		public final int alchemyLevel = 8;
+
+				{
 			inputs =  new Class[]{PotionOfFrost.class};
 			inQuantity = new int[]{1};
 			
