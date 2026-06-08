@@ -50,7 +50,14 @@ public class APManager {
 
         completedChecks.add(location);
 
-        APConnector.sendCheck(location.apid);
+
+        APItem randItem = APItem.values()[Random.Int(APItem.values().length)];
+
+
+        //TODO fix once ap side integrated
+        GLog.w("[AP] " + Messages.get(APManager.class, "item_sent", randItem, "player"));
+
+        receiveItem(randItem);
     }
 
     public static void receiveItem(APItem item) {
