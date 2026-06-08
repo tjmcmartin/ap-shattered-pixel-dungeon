@@ -27,7 +27,6 @@ import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
-import com.shatteredpixel.shatteredpixeldungeon.ap.APConnector;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
@@ -344,9 +343,6 @@ public class StartScene extends PixelScene {
 			if (newGame) {
 				GamesInProgress.selectedClass = null;
 				GamesInProgress.curSlot = slot;
-
-				//TODO this is temporary
-				APConnector.connect();
 
 				ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
 			} else {
