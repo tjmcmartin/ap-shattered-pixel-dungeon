@@ -59,15 +59,6 @@ public class APManager {
             case TRINKET:
                 availableTrinkets.add(item);
                 break;
-            case WEAPONRY:
-                switch (item.id) {
-                    case 0:
-                        max_weapon_tier++;
-                    case 1:
-                        max_armor_tier++;
-                    case 2:
-                        max_missile_tier++;
-                }
             case EQUIPMENT:
                 Generator.Category cat = Generator.Category.valueOf(item.getSubcategory().name());
                 cat.defaultProbs[item.id] = cat.maxDefaultProbs[item.id];

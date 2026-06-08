@@ -26,8 +26,6 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
-import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
-import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -364,10 +362,10 @@ public class ShopRoom extends SpecialRoom {
 
 		//generate a hashmap of all valid bags.
 		HashMap<Bag, Integer> bags = new HashMap<>();
-		if (!Dungeon.LimitedDrops.VELVET_POUCH.dropped() && APManager.hasItem(APItem.VELVET_POUCH)) bags.put(new VelvetPouch(), 1);
-		if (!Dungeon.LimitedDrops.SCROLL_HOLDER.dropped() && APManager.hasItem(APItem.SCROLL_HOLDER)) bags.put(new ScrollHolder(), 0);
-		if (!Dungeon.LimitedDrops.POTION_BANDOLIER.dropped() && APManager.hasItem(APItem.POTION_BANDOLIER)) bags.put(new PotionBandolier(), 0);
-		if (!Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped() && APManager.hasItem(APItem.MAGICAL_HOLSTER)) bags.put(new MagicalHolster(), 0);
+		if (!Dungeon.LimitedDrops.VELVET_POUCH.dropped()) bags.put(new VelvetPouch(), 1);
+		if (!Dungeon.LimitedDrops.SCROLL_HOLDER.dropped()) bags.put(new ScrollHolder(), 0);
+		if (!Dungeon.LimitedDrops.POTION_BANDOLIER.dropped()) bags.put(new PotionBandolier(), 0);
+		if (!Dungeon.LimitedDrops.MAGICAL_HOLSTER.dropped()) bags.put(new MagicalHolster(), 0);
 
 		if (bags.isEmpty()) return null;
 

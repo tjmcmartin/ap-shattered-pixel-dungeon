@@ -129,7 +129,7 @@ public enum APItem {
     SCROLL_HOLDER (Category.EXPANDER, null, 2),
     MAGICAL_HOLSTER (Category.EXPANDER, null, 3),
     PROGRESSIVE_MAX_LEVEL (Category.LEVEL, null, 0),
-    SEARCH (Category.ACTION, null, 0),
+    SEARCHING (Category.ACTION, null, 0),
     PROGRESSIVE_ALCHEMY (Category.ACTION, null, 1),
     SAD_GHOST_QUEST (Category.QUEST, null, 0),
     WANDMAKER_QUEST (Category.QUEST, null, 1),
