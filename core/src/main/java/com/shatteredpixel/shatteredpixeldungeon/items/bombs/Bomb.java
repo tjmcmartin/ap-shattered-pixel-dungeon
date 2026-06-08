@@ -352,7 +352,9 @@ public class Bomb extends Item {
 	}
 	
 	public static class EnhanceBomb extends Recipe {
-		
+
+		public final int alchemyLevel = 6;
+
 		public static final LinkedHashMap<Class<?extends Item>, Class<?extends Bomb>> validIngredients = new LinkedHashMap<>();
 		static {
 			validIngredients.put(PotionOfFrost.class,           FrostBomb.class);

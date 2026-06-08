@@ -465,7 +465,9 @@ public class Potion extends Item {
 	}
 	
 	public static class SeedToPotion extends Recipe {
-		
+
+		public final int alchemyLevel = 1;
+
 		public static HashMap<Class<?extends Plant.Seed>, Class<?extends Potion>> types = new HashMap<>();
 		static {
 			types.put(Blindweed.Seed.class,     PotionOfInvisibility.class);

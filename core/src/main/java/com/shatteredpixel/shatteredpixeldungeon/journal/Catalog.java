@@ -152,7 +152,7 @@ public enum Catalog {
 	MISC_CONSUMABLES;
 
 	//tracks whether an item has been collected while identified
-	private final LinkedHashMap<Class<?>, Boolean> seen = new LinkedHashMap<>();
+	public final LinkedHashMap<Class<?>, Boolean> seen = new LinkedHashMap<>();
 	//tracks upgrades spent for equipment, uses for consumables
 	private final LinkedHashMap<Class<?>, Integer> useCount = new LinkedHashMap<>();
 	

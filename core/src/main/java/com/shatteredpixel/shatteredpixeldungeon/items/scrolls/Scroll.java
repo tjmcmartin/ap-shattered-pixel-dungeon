@@ -306,6 +306,8 @@ public abstract class Scroll extends Item {
 	}
 	
 	public static class ScrollToStone extends Recipe {
+
+		public final int alchemyLevel = 2;
 		
 		private static HashMap<Class<?extends Scroll>, Class<?extends Runestone>> stones = new HashMap<>();
 		static {

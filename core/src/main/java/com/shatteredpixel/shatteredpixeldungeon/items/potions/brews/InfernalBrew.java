@@ -59,8 +59,10 @@ public class InfernalBrew extends Brew {
 	}
 	
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
-		
-		{
+
+		public final int alchemyLevel = 8;
+
+				{
 			inputs =  new Class[]{PotionOfLiquidFlame.class};
 			inQuantity = new int[]{1};
 			

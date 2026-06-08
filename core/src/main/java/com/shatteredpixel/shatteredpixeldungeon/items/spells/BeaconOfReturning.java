@@ -277,6 +277,8 @@ public class BeaconOfReturning extends Spell {
 	
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
+		public final int alchemyLevel = 9;
+
 		private static final int OUT_QUANTITY = 5;
 		
 		{

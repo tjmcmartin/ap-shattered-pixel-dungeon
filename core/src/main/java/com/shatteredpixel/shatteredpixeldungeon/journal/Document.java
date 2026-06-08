@@ -327,7 +327,7 @@ public enum Document {
 		HALLS_KING.pagesStates.put("ritual",                    debug ? READ : NOT_FOUND);
 		HALLS_KING.pagesStates.put("new_king",                  debug ? READ : NOT_FOUND);
 		HALLS_KING.pagesStates.put("thing",                     debug ? READ : NOT_FOUND);
-		HALLS_KING.pagesStates.put(KING_ATTRITION,              debug ? NOT_FOUND : NOT_FOUND);
+		HALLS_KING.pagesStates.put(KING_ATTRITION,              debug ? READ : NOT_FOUND);
 
 	}
 	

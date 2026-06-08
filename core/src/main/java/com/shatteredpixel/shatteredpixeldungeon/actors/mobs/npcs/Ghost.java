@@ -363,6 +363,10 @@ public class Ghost extends NPC {
 					glyph = null;
 				}
 
+			} else if ( Dungeon.depth == 4) {
+
+				spawned = true;
+
 			}
 		}
 		

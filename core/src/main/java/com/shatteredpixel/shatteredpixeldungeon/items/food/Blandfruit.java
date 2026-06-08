@@ -237,7 +237,9 @@ public class Blandfruit extends Food {
 	}
 	
 	public static class CookFruit extends Recipe {
-		
+
+		public final int alchemyLevel = 3;
+
 		@Override
 		//also sorts ingredients if it can
 		public boolean testIngredients(ArrayList<Item> ingredients) {

@@ -119,6 +119,8 @@ public abstract class ExoticScroll extends Scroll {
 	}
 	
 	public static class ScrollToExotic extends Recipe {
+
+		public final int alchemyLevel = 5;
 		
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {

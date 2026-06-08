@@ -29,6 +29,7 @@ import com.shatteredpixel.shatteredpixeldungeon.SPDAction;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Belongings;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SparkParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.EnergyCrystal;
@@ -692,6 +693,9 @@ public class AlchemyScene extends PixelScene {
 		Item result = null;
 		
 		if (recipe != null){
+			if (APManager.alchemy_level < recipe.alchemyLevel) {
+				return;
+			}
 			int cost = recipe.cost(ingredients);
 			if (toolkit != null){
 				cost = toolkit.consumeEnergy(cost);

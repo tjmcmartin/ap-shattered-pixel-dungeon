@@ -266,7 +266,6 @@ public class CrystalPathRoom extends SpecialRoom {
 			//we have to de-exotify for comparison here to weed out duplicates
 			Class rewardClass = reward.getClass();
 			if (rewardClass == Gold.class || choices.isEmpty() || n > 50) {
-				System.out.println("This took " + n + " loops!");
 				items.add(reward);
 				return;
 			}

@@ -62,6 +62,8 @@ public class AquaBrew extends Brew {
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe.SimpleRecipe {
 
+		public final int alchemyLevel = 8;
+
 		private static final int OUT_QUANTITY = 8;
 
 		{

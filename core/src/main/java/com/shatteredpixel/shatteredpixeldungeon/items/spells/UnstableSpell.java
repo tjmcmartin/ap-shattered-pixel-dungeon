@@ -130,6 +130,8 @@ public class UnstableSpell extends Spell {
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
 
+		public final int alchemyLevel = 9;
+
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
 			boolean scroll = false;
