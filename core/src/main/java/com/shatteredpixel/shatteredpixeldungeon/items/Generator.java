@@ -917,12 +917,20 @@ public class Generator {
 	public static MissileWeapon randomMissile(int floorSet, boolean useDefaults) {
 		
 		floorSet = (int)GameMath.gate(0, floorSet, floorSetTierProbs.length-1);
+		int tier = Random.chances(floorSetTierProbs[floorSet]);
+
+		while (tier > APManager.max_missile_tier) {
+			tier--;
+			if (tier <= 0) {
+				return null;
+			}
+		}
 
 		MissileWeapon w;
 		if (useDefaults){
-			w = (MissileWeapon)randomUsingDefaults(misTiers[Random.chances(floorSetTierProbs[floorSet])]);
+			w = (MissileWeapon)randomUsingDefaults(misTiers[tier]);
 		} else {
-			w = (MissileWeapon)random(misTiers[Random.chances(floorSetTierProbs[floorSet])]);
+			w = (MissileWeapon)random(misTiers[tier]);
 		}
 		return w;
 	}
