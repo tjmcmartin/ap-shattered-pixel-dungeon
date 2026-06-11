@@ -152,7 +152,8 @@ public class APManager {
     }
 
     public static boolean hasTalent (Talent talent) {
-        return false;
+        APItem item = APItem.fromString( talent.name());
+        return hasItem(item);
     }
 
     public static int getMaxLevel(HeroClass heroClass) {
