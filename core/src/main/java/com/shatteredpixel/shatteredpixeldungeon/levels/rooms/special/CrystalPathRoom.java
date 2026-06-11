@@ -286,7 +286,7 @@ public class CrystalPathRoom extends SpecialRoom {
 				if (iClass == rewardClass){
 					dupes.add(reward);
 					dupe = true;
-					choices.remove(APItem.fromString( APItem.classToEnum(iClass.getName()) ));
+					choices.remove(APItem.fromString( APItem.classToEnum(iClass.getSimpleName()) ));
 					break;
 				}
 			}

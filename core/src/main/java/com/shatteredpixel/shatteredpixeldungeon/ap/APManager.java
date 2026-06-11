@@ -152,7 +152,7 @@ public class APManager {
     }
 
     public static boolean hasTalent (Talent talent) {
-        APItem item = APItem.fromString( talent.name());
+        APItem item = APItem.fromString( talent.name() );
         return hasItem(item);
     }
 

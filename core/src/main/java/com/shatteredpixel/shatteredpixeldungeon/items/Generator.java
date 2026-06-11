@@ -675,7 +675,7 @@ public class Generator {
 			}
 			List<APItem> apItems = APItem.getBySubcategory(APItem.Subcategory.fromString(cat.name()));
 			for (int i=0; i<cat.probs.length-1; ++i) {
-				if (APManager.hasItem( APItem.fromString( APItem.classToEnum( cat.classes[i].getName() ) ) ) ) {
+				if (APManager.hasItem( APItem.fromString( APItem.classToEnum( cat.classes[i].getSimpleName() ) ) ) ) {
 					cat.probs[i] = 0;
 				}
 			}

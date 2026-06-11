@@ -58,6 +58,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.ClericSpell;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.GuidingLight;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.spells.Stasis;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.DirectableAlly;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APLocation;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
@@ -66,6 +67,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.Surprise;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Wound;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ShadowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.MasterThievesArmband;
 import com.shatteredpixel.shatteredpixeldungeon.items.artifacts.TimekeepersHourglass;
@@ -1005,6 +1007,13 @@ public abstract class Mob extends Char {
 
 		} else if (loot instanceof Class<?>) {
 
+			System.out.println(((Class<?>) loot).getName());
+			APItem apItem = APItem.fromString( APItem.classToEnum( ((Class<?>) loot).getSimpleName() ) );
+
+			if (apItem != null && !APManager.hasItem(apItem)) {
+				return new Gold().random();
+			}
+
 			if (ExoticPotion.regToExo.containsKey(loot)){
 				if (Random.Float() < ExoticCrystals.consumableExoticChance()){
 					return Generator.random(ExoticPotion.regToExo.get(loot));
@@ -1018,6 +1027,8 @@ public abstract class Mob extends Char {
 			item = Generator.random( (Class<? extends Item>)loot );
 
 		} else {
+
+			System.out.println(loot);
 
 			item = (Item)loot;
 
