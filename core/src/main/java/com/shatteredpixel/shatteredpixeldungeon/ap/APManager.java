@@ -8,6 +8,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APItem.Subcategory;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -148,6 +149,10 @@ public class APManager {
 
     public static boolean hasItem (APItem item){
         return receivedItems.containsKey(item);
+    }
+
+    public static boolean hasTalent (Talent talent) {
+        return false;
     }
 
     public static int getMaxLevel(HeroClass heroClass) {

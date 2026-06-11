@@ -26,12 +26,14 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.effects.Speck;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.exotic.ScrollOfMetamorphosis;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndInfoTalent;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndMessage;
 import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.PointerArea;
@@ -117,19 +119,26 @@ public class TalentButton extends Button {
 				&& Dungeon.hero.isAlive()
 				&& Dungeon.hero.talentPointsAvailable(tier) > 0
 				&& Dungeon.hero.pointsInTalent(talent) < talent.maxPoints()){
-			toAdd = new WndInfoTalent(talent, pointsInTalent, new WndInfoTalent.TalentButtonCallback() {
 
-				@Override
-				public String prompt() {
-					return Messages.titleCase(Messages.get(WndInfoTalent.class, "upgrade"));
-				}
+			System.out.println("The first one is running!");
 
-				@Override
-				public void call() {
-					upgradeTalent();
-					Statistics.qualifiedForRandomVictoryBadge = false;
-				}
-			});
+			if (APManager.hasTalent(talent)) {
+				toAdd = new WndInfoTalent(talent, pointsInTalent, new WndInfoTalent.TalentButtonCallback() {
+
+					@Override
+					public String prompt() {
+						return Messages.titleCase(Messages.get(WndInfoTalent.class, "upgrade"));
+					}
+
+					@Override
+					public void call() {
+						upgradeTalent();
+						Statistics.qualifiedForRandomVictoryBadge = false;
+					}
+				});
+			} else {
+				toAdd = new WndMessage( Messages.get(TalentButton.class, "talent_locked", talent.name()));
+			}
 		} else if (mode == Mode.METAMORPH_CHOOSE && Dungeon.hero != null && Dungeon.hero.isAlive()) {
 			toAdd = new WndInfoTalent(talent, pointsInTalent, new WndInfoTalent.TalentButtonCallback() {
 
@@ -212,7 +221,11 @@ public class TalentButton extends Button {
 				}
 			});
 		} else {
-			toAdd = new WndInfoTalent(talent, pointsInTalent, null);
+			if (APManager.hasTalent(talent)) {
+				toAdd = new WndInfoTalent(talent, pointsInTalent, null);
+			} else {
+				toAdd = new WndMessage( Messages.get(TalentButton.class, "talent_locked", talent.name()));
+			}
 		}
 
 		if (ShatteredPixelDungeon.scene() instanceof GameScene){
