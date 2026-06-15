@@ -1,6 +1,5 @@
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,7 +10,9 @@ import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
+import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
 import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
+import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.glscripts.Script;
@@ -20,9 +21,7 @@ import com.watabou.glwrap.Quad;
 import com.watabou.glwrap.Texture;
 import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
-import com.watabou.noosa.Image;
 import com.watabou.noosa.TextInput;
-import com.watabou.utils.GameMath;
 import com.watabou.utils.RectF;
 
 public class ConnectScene extends PixelScene {
@@ -33,6 +32,7 @@ public class ConnectScene extends PixelScene {
     private TextInput addressField;
     private TextInput slotNameField;
     private TextInput passwordField;
+    private StyledButton btnConnect;
     private IconButton btnExit;
     private Stage stage;
 
@@ -53,7 +53,7 @@ public class ConnectScene extends PixelScene {
         stage = new Stage(viewport);
         Game.inputHandler.addInputProcessor(stage);
 
-//        stage.getViewport().update((int) h, (int) w, true);
+        stage.getViewport().update((int) h, (int) w, true);
 
         TitleBackground BG = new TitleBackground((int) h, (int) w);
         add(BG);
@@ -76,9 +76,10 @@ public class ConnectScene extends PixelScene {
             public void downPressed() {
                 addressField.nextField();
             }
+
             @Override
-            public void upPressed() {
-                addressField.prevField();
+            public void enterPressed() {
+                addressField.nextField();
             }
         };
         addressField.setText("");
@@ -101,6 +102,11 @@ public class ConnectScene extends PixelScene {
             public void upPressed() {
                 slotNameField.prevField();
             }
+
+            @Override
+            public void enterPressed() {
+                slotNameField.nextField();
+            }
         };
         slotNameField.setText("FILLER");
         slotNameField.setMaxLength(30);
@@ -115,12 +121,13 @@ public class ConnectScene extends PixelScene {
 
         passwordField = new TextInput(Chrome.get(Chrome.Type.TOAST_WHITE), false, 50, false, stage) {
             @Override
-            public void downPressed() {
-                passwordField.nextField();
-            }
-            @Override
             public void upPressed() {
                 passwordField.prevField();
+            }
+
+            @Override
+            public void enterPressed() {
+                connect();
             }
         };
         passwordField.setText("FILLER");
@@ -133,6 +140,17 @@ public class ConnectScene extends PixelScene {
         btnExit.setPos(Camera.main.width - btnExit.width() - ofs, ofs);
         add(btnExit);
         btnExit.active = true;
+
+        btnConnect = new StyledButton(Chrome.Type.GREY_BUTTON_TR, Messages.get(this, "connect")) {
+            @Override
+            protected void onClick() {
+                connect();
+            }
+        };
+        btnConnect.icon(Icons.get(Icons.ENTER));
+        add(btnConnect);
+
+        btnConnect.setRect(w/2 - passwordField.width()/2, passwordField.bottom() + gap, passwordField.width(), 20);
 
         fadeIn();
 
@@ -161,7 +179,16 @@ public class ConnectScene extends PixelScene {
 
     @Override
     protected void onBackPressed() {
-        ShatteredPixelDungeon.switchScene(TitleScene.class);
+        if (btnExit.active) {
+            ShatteredPixelDungeon.switchScene(TitleScene.class);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    //TODO change this to communicate with ap server
+    private void connect() {
+        ShatteredPixelDungeon.switchScene(StartScene.class);
     }
 
 }

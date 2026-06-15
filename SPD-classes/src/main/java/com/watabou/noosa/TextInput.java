@@ -83,6 +83,9 @@ public class TextInput extends Component {
 
 		TextField.TextFieldStyle style = skin.get(TextField.TextFieldStyle.class);
 		style.font = Game.platform.getFont(size, "", false, false);
+		if (isConnectScene) {
+			style.font.getData().setScale(0.25f);
+		}
 		style.background = null;
 		if (multiline){
 			textField = new TextArea("", style){
@@ -270,19 +273,28 @@ public class TextInput extends Component {
 			contH -= bg.marginVer();
 		}
 
-		float zoom = Camera.main.zoom;
-		Camera c = camera();
-		if (c != null){
-			zoom = c.zoom;
-			Point p = c.cameraToScreen(contX, contY);
-			contX = p.x/zoom;
-			contY = p.y/zoom;
-		}
-
 		container.align(Align.topLeft);
-		container.setPosition(contX*zoom, (Game.height-(contY*zoom)));
-		container.size(contW*zoom, contH*zoom);
+
+		if (isConnectScene) {
+			float libgdxY = 270.0f - contY - contH;
+
+			container.setPosition(contX, libgdxY);
+			container.size(contW, contH);
+		} else {
+			float zoom = Camera.main.zoom;
+			Camera c = camera();
+			if (c != null) {
+				zoom = c.zoom;
+				Point p = c.cameraToScreen(contX, contY);
+				contX = p.x / zoom;
+				contY = p.y / zoom;
+			}
+
+			container.setPosition(contX * zoom, (Game.height - (contY * zoom)));
+			container.size(contW * zoom, contH * zoom);
+		}
 	}
+
 
 	@Override
 	public void update() {
