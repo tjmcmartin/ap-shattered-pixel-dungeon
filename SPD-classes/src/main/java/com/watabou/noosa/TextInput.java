@@ -23,11 +23,14 @@ package com.watabou.noosa;
 
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Container;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -55,22 +58,22 @@ public class TextInput extends Component {
 	private Skin skin;
 
 	private NinePatch bg;
+	private boolean isConnectScene = true;
 
-	public TextInput( NinePatch bg, boolean multiline, int size ){
+
+	public TextInput( NinePatch bg, boolean multiline, int size, boolean autoFocus) {
+		//use a custom viewport here to ensure stage camera matches game camera
+		this(bg, multiline, size, autoFocus, createStage() );
+
+		this.isConnectScene = false;
+	}
+	public TextInput( NinePatch bg, boolean multiline, int size, boolean autoFocus, Stage stage){
 		super();
 		this.bg = bg;
+		this.stage = stage;
 		add(bg);
-
-		//use a custom viewport here to ensure stage camera matches game camera
-		Viewport viewport = new Viewport() {};
-		viewport.setWorldSize(Game.width, Game.height);
-		viewport.setScreenBounds(0, 0, Game.width, Game.height);
-		viewport.setCamera(new OrthographicCamera());
 		//TODO this is needed for the moment as Spritebatch switched to using VAOs in libGDX v1.13.1
 		//  This results in HARD crashes atm, whereas old vertex arrays work fine
-		SpriteBatch.overrideVertexType = Mesh.VertexDataType.VertexArray;
-		stage = new Stage(viewport);
-		Game.inputHandler.addInputProcessor(stage);
 
 		container = new Container<TextField>();
 		stage.addActor(container);
@@ -138,6 +141,22 @@ public class TextInput extends Component {
 			});
 		}
 
+		if(!multiline){
+			textField.addListener(new InputListener() {
+				@Override
+				public boolean keyDown (InputEvent event, int keycode) {
+					if (keycode == Input.Keys.DOWN) {
+						downPressed();
+						return true;
+					} else if (keycode == Input.Keys.UP) {
+						upPressed();
+						return true;
+					}
+					return false;
+				}
+			});
+		}
+
 		textField.setOnscreenKeyboard(new TextField.OnscreenKeyboard() {
 			@Override
 			public void show(boolean visible) {
@@ -146,13 +165,36 @@ public class TextInput extends Component {
 		});
 
 		container.setActor(textField);
-		stage.setKeyboardFocus(textField);
+		if (autoFocus)		stage.setKeyboardFocus(textField);
 		Game.platform.setOnscreenKeyboardVisible(true, multiline);
+	}
+
+	private static Stage createStage() {
+		SpriteBatch.overrideVertexType = Mesh.VertexDataType.VertexArray;
+
+		Viewport viewport = new Viewport() {};
+		viewport.setWorldSize(Game.width, Game.height);
+		viewport.setScreenBounds(0, 0, Game.width, Game.height);
+		viewport.setCamera(new OrthographicCamera());
+
+		Stage stage = new Stage(viewport);
+
+		Game.inputHandler.addInputProcessor(stage);
+
+		return stage;
 	}
 
 	public void enterPressed(){
 		//fires any time enter is pressed, do nothing by default
-	};
+	}
+
+	public void downPressed() {
+		//fires any time down arrow is pressed, do nothing by default
+	}
+
+	public void upPressed() {
+		//fires any time up arrow is pressed, do nothing by default
+	}
 
 	public void onChanged(){
 		//fires any time the text box is changed, do nothing by default
@@ -165,6 +207,14 @@ public class TextInput extends Component {
 	public void setText(String text){
 		textField.setText(text);
 		textField.setCursorPosition(textField.getText().length());
+	}
+
+	public void nextField() {
+		textField.next(false);
+	}
+
+	public void prevField() {
+		textField.next(true);
 	}
 
 	public void setMaxLength(int maxLength){
@@ -237,29 +287,33 @@ public class TextInput extends Component {
 	@Override
 	public void update() {
 		super.update();
-		stage.act(Game.elapsed);
+		if (!isConnectScene) {
+			stage.act(Game.elapsed);
+		}
 	}
 
 	@Override
 	public void draw() {
 		super.draw();
-		Quad.releaseIndices();
-		Script.unuse();
-		Texture.clear();
-		stage.draw();
-		Quad.bindIndices();
-		Blending.useDefault();
+		if (!isConnectScene) {
+			Quad.releaseIndices();
+			Script.unuse();
+			Texture.clear();
+			stage.draw();
+			Quad.bindIndices();
+			Blending.useDefault();
+		}
 	}
 
 	@Override
 	public synchronized void destroy() {
 		super.destroy();
-		if (stage != null) {
+		if (stage != null && !isConnectScene) {
 			stage.dispose();
-			skin.dispose();
-			Game.inputHandler.removeInputProcessor(stage);
-			Game.platform.setOnscreenKeyboardVisible(false, false);
-			if (!DeviceCompat.isDesktop()) Game.platform.updateSystemUI();
 		}
+		skin.dispose();
+		Game.inputHandler.removeInputProcessor(stage);
+		Game.platform.setOnscreenKeyboardVisible(false, false);
+		if (!DeviceCompat.isDesktop()) Game.platform.updateSystemUI();
 	}
 }

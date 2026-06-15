@@ -84,7 +84,7 @@ public class HeroSelectScene extends PixelScene {
 	private IconButton btnFade; //only on landscape
 
 	//fading UI elements
-	private RenderedTextBlock title;
+	private RenderedTextBlock  title;
 	private ArrayList<StyledButton> heroBtns = new ArrayList<>();
 	private RenderedTextBlock heroName; //only on landscape
 	private RenderedTextBlock heroDesc; //only on landscape
