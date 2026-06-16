@@ -66,6 +66,6 @@ public class APLootItem extends Item {
     @Override
     public int value() {
         //TODO change this once ap server connection is implemented
-        return 300;
+        return 30;
     }
 }

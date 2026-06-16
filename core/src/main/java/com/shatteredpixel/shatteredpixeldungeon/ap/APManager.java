@@ -10,17 +10,20 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APItem.Subcategory;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
-import com.shatteredpixel.shatteredpixeldungeon.items.APLootItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.watabou.utils.Bundle;
 import com.watabou.utils.Random;
+import com.watabou.utils.Reflection;
 
 public class APManager {
 
@@ -70,6 +73,7 @@ public class APManager {
         //TODO fix once ap side integrated
         GLog.w("[AP] " + Messages.get(APManager.class, "item_sent", randItem, "player"));
 
+        receiveItem(APItem.POISON_TRAP);
         receiveItem(randItem);
     }
 
@@ -150,6 +154,26 @@ public class APManager {
                             break;
                     }
                     Dungeon.hero.earnExp(0, APManager.class);
+                    break;
+                case TRAP:
+                    switch (item.getSubcategory()) {
+                        case DEBUFF:
+                            if (item.debuff.equals(Poison.class)) {
+                                int duration = Math.max( 4, Random.IntRange(2, 3) + Dungeon.depth/3 );
+                                Buff.affect(Dungeon.hero, (Class<Poison>) item.debuff).set( duration );
+                            } else {
+                                Buff.affect(Dungeon.hero, item.debuff);
+                            }
+
+                            break;
+                        case TRAP_EFFECT:
+                            try {
+                                Reflection.newInstance(item.trap).set(Dungeon.hero.pos).activate();
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            break;
+                    }
                     break;
                 default:
                     GLog.i("[TODO] The item " + item + " does nothing atm, sorry!");
