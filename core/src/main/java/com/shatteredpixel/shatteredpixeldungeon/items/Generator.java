@@ -797,7 +797,11 @@ public class Generator {
 			int n = Random.chances(cat.defaultProbsTotal);
 			return ((Item) ((n != -1) ? Reflection.newInstance(cat.classes[n]) : new Gold())).random();
 		} else {
-			Class<?> itemCls = cat.classes[Random.chances(cat.defaultProbs)];
+			int n = Random.chances(cat.defaultProbs);
+			if (n == -1) {
+				return new Gold().random();
+			}
+			Class<?> itemCls = cat.classes[n];
 
 			if (ExoticPotion.regToExo.containsKey(itemCls)){
 				if (Random.Float() < ExoticCrystals.consumableExoticChance()){
