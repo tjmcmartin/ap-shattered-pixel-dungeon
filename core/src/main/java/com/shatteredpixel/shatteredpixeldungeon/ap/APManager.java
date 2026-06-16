@@ -1,8 +1,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.ap;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -11,6 +14,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APItem.Subcategory;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.items.APLootItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.bags.VelvetPouch;
 import com.shatteredpixel.shatteredpixeldungeon.utils.GLog;
@@ -36,10 +40,18 @@ public class APManager {
     public static int alchemy_level = 0;
     public static HashSet<APItem> availableTrinkets = new HashSet<>();
     public static Map<Subcategory, HashSet<APItem>> availableItems = new HashMap<>();
+    public static Map<APLocation.shopLocationType, List<Integer>> shopLocations = new HashMap<>();
 
     static {
         for (Subcategory cat : Subcategory.values()) {
             availableItems.put(cat, new HashSet<>());
+        }
+        for (APLocation.shopLocationType shop : APLocation.shopLocationType.values()) {
+            shopLocations.put(shop, new ArrayList<>());
+            for (int i=0; i<shop.total-1; i++) {
+                shopLocations.get(shop).add(shop.startApid+i);
+            }
+            Collections.shuffle( shopLocations.get(shop) );
         }
     }
 
@@ -156,6 +168,11 @@ public class APManager {
         return hasItem(item);
     }
 
+    public static boolean hasEquipmentType(Generator.Category genCat) {
+        APItem.Subcategory cat = APItem.Subcategory.fromString( genCat.name() );
+        return !availableItems.get(cat).isEmpty();
+    }
+
     public static int getMaxLevel(HeroClass heroClass) {
         Subcategory subCat = Subcategory.fromString(heroClass.name());
         if (subCat == null) {
@@ -177,6 +194,11 @@ public class APManager {
             default:
                 return 30;
         }
+    }
+
+    public static APLocation getNextShopLocation(int depth) {
+        List<Integer> locations = shopLocations.get( APLocation.shopLocationType.byDepth(depth) );
+        return APLocation.fromId( locations.remove(locations.size()-1) );
     }
 
     private static final String RECEIVED_ITEM_NAMES = "received_items_names";

@@ -28,8 +28,10 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Shopkeeper;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
+import com.shatteredpixel.shatteredpixeldungeon.items.APLootItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Ankh;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -231,28 +233,28 @@ public class ShopRoom extends SpecialRoom {
 		case 6: default:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[1]);
 			m = (MissileWeapon) Generator.random(Generator.misTiers[1]);
-			itemsToSpawn.add( new LeatherArmor().identify(false) );
+			itemsToSpawn.add( (APManager.max_armor_tier >= 1) ? new LeatherArmor().identify(false): new Gold().random());
 			break;
 			
 		case 11:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[2]);
 			m = (MissileWeapon) Generator.random(Generator.misTiers[2]);
-			itemsToSpawn.add( new MailArmor().identify(false) );
+			itemsToSpawn.add( (APManager.max_armor_tier >= 2) ? new MailArmor().identify(false) : new Gold().random());
 			break;
 			
 		case 16:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[3]);
 			m = (MissileWeapon) Generator.random(Generator.misTiers[3]);
-			itemsToSpawn.add( new ScaleArmor().identify(false) );
+			itemsToSpawn.add( (APManager.max_armor_tier >=3) ? new ScaleArmor().identify(false) : new Gold().random());
 			break;
 
 		case 20: case 21:
 			w = (MeleeWeapon) Generator.random(Generator.wepTiers[4]);
 			m = (MissileWeapon) Generator.random(Generator.misTiers[4]);
-			itemsToSpawn.add( new PlateArmor().identify(false) );
-			itemsToSpawn.add( new Torch() );
-			itemsToSpawn.add( new Torch() );
-			itemsToSpawn.add( new Torch() );
+			itemsToSpawn.add( (APManager.max_armor_tier >= 4) ? new PlateArmor().identify(false) : new Gold().random());
+			itemsToSpawn.add( (APManager.hasItem(APItem.TORCHES)) ? new Torch() : new Gold().random() );
+			itemsToSpawn.add( (APManager.hasItem(APItem.TORCHES)) ? new Torch() : new Gold().random() );
+			itemsToSpawn.add( (APManager.hasItem(APItem.TORCHES)) ? new Torch() : new Gold().random() );
 			break;
 		}
 		w.enchant(null);
@@ -267,7 +269,7 @@ public class ShopRoom extends SpecialRoom {
 		m.identify(false);
 		itemsToSpawn.add(m);
 		
-		itemsToSpawn.add( TippedDart.randomTipped(2) );
+		itemsToSpawn.add( (APManager.max_missile_tier >= 1) ? TippedDart.randomTipped(2) : new Gold().random() );
 
 		itemsToSpawn.add( new Alchemize().quantity(Random.IntRange(2, 3)));
 
@@ -276,13 +278,13 @@ public class ShopRoom extends SpecialRoom {
 			itemsToSpawn.add(bag);
 		}
 
-		itemsToSpawn.add( new PotionOfHealing() );
+		itemsToSpawn.add( (APManager.hasItem(APItem.POTION_OF_HEALING)) ? new PotionOfHealing() : new Gold().random() );
 		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
 		itemsToSpawn.add( Generator.randomUsingDefaults( Generator.Category.POTION ) );
 
-		itemsToSpawn.add( new ScrollOfIdentify() );
-		itemsToSpawn.add( new ScrollOfRemoveCurse() );
-		itemsToSpawn.add( new ScrollOfMagicMapping() );
+		itemsToSpawn.add( (APManager.hasItem(APItem.SCROLL_OF_IDENTIFY)) ? new ScrollOfIdentify() : new Gold().random() );
+		itemsToSpawn.add( (APManager.hasItem(APItem.SCROLL_OF_REMOVE_CURSE)) ? new ScrollOfRemoveCurse() : new Gold().random() );
+		itemsToSpawn.add( (APManager.hasItem(APItem.SCROLL_OF_MAGIC_MAPPING)) ? new ScrollOfMagicMapping() : new Gold().random() );
 
 		for (int i=0; i < 2; i++)
 			itemsToSpawn.add( Random.Int(2) == 0 ?
@@ -334,22 +336,30 @@ public class ShopRoom extends SpecialRoom {
 		Item rare;
 		switch (Random.Int(10)){
 			case 0:
-				rare = Generator.random( Generator.Category.WAND );
-				rare.level( 0 );
-				break;
+				if (APManager.hasEquipmentType( Generator.Category.WAND )) {
+					rare = Generator.random(Generator.Category.WAND);
+					rare.level(0);
+					break;
+				}
 			case 1:
-				rare = Generator.random(Generator.Category.RING);
-				rare.level( 0 );
-				break;
+				if (APManager.hasEquipmentType( Generator.Category.RING )) {
+					rare = Generator.random(Generator.Category.RING);
+					rare.level(0);
+					break;
+				}
 			case 2:
-				rare = Generator.random( Generator.Category.ARTIFACT );
-				break;
+				if (APManager.hasEquipmentType( Generator.Category.ARTIFACT )) {
+					rare = Generator.random(Generator.Category.ARTIFACT);
+					break;
+				}
 			default:
-				rare = new Stylus();
+				rare = (APManager.hasItem(APItem.ARCANE_STYLUS)) ? new Stylus() : new APLootItem();
 		}
 		rare.cursed = false;
 		rare.cursedKnown = true;
 		itemsToSpawn.add( rare );
+
+		itemsToSpawn.add( new APLootItem() );
 
 		//use a new generator here to prevent items in shop stock affecting levelgen RNG (e.g. sandbags)
 		//we can use a random long for the seed as it will be the same long every time
