@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Imp;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
 import com.shatteredpixel.shatteredpixeldungeon.levels.features.LevelTransition;
@@ -66,18 +68,20 @@ public class AmbitiousImpRoom extends SpecialRoom {
 		Painter.set(level, c.x+3, c.y+3, Terrain.WALL_DECO);
 
 		Door entrance = entrance();
-		Imp npc = new Imp();
-		npc.pos = level.pointToCell(c);
+		if (APManager.hasItem(APItem.AMBITIOUS_IMP_QUEST)) {
+			Imp npc = new Imp();
+			npc.pos = level.pointToCell(c);
 
-		//TODO we have imp in front for now, do we want to put him in the back?
-		if (entrance.x == left || entrance.x == right){
-			npc.pos += Random.IntRange(-1, 1)*level.width();
-			npc.pos += entrance.x == left ? -2 : 2;
-		} else if (entrance.y == top || entrance.y == bottom){
-			npc.pos += Random.IntRange(-1, 1);
-			npc.pos += level.width() * (entrance.y == top ? -2 : 2);
+			//TODO we have imp in front for now, do we want to put him in the back?
+			if (entrance.x == left || entrance.x == right) {
+				npc.pos += Random.IntRange(-1, 1) * level.width();
+				npc.pos += entrance.x == left ? -2 : 2;
+			} else if (entrance.y == top || entrance.y == bottom) {
+				npc.pos += Random.IntRange(-1, 1);
+				npc.pos += level.width() * (entrance.y == top ? -2 : 2);
+			}
+			level.mobs.add(npc);
 		}
-		level.mobs.add( npc );
 
 		Painter.drawInside(level, this, entrance, 1, Terrain.EMPTY);
 		entrance.set( Door.Type.REGULAR ); //TODO maybe lock?
@@ -91,15 +95,15 @@ public class AmbitiousImpRoom extends SpecialRoom {
 		vis2.pos(c.x - 1, c.y - 1);
 		level.customTiles.add(vis2);
 
-		int entrancePos = level.pointToCell(c);
+//		int entrancePos = level.pointToCell(c);  TODO add this back in once quest overhaul is done
 
-		level.transitions.add(new LevelTransition(level,
-				entrancePos,
-				LevelTransition.Type.BRANCH_EXIT,
-				Dungeon.depth,
-				Dungeon.branch + 1,
-				LevelTransition.Type.BRANCH_ENTRANCE));
-		Painter.set(level, entrancePos, Terrain.EXIT);
+//		level.transitions.add(new LevelTransition(level,
+//				entrancePos,
+//				LevelTransition.Type.BRANCH_EXIT,
+//				Dungeon.depth,
+//				Dungeon.branch + 1,
+//				LevelTransition.Type.BRANCH_ENTRANCE));
+//		Painter.set(level, entrancePos, Terrain.EXIT);
 
 	}
 

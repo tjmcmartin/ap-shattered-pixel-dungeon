@@ -29,6 +29,8 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Golem;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Monk;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.quest.DwarfToken;
 import com.shatteredpixel.shatteredpixeldungeon.items.rings.Ring;
@@ -210,7 +212,7 @@ public class Imp extends NPC {
 		}
 
 		public static ArrayList<Room> spawn( ArrayList<Room> rooms ) {
-			if (!spawned && Dungeon.depth > 16 && Random.Int( 20 - Dungeon.depth ) == 0) {
+			if (!spawned && Dungeon.depth > 16 && APManager.hasItem(APItem.AMBITIOUS_IMP_QUEST) && Random.Int( 20 - Dungeon.depth ) == 0) {
 
 				rooms.add(new AmbitiousImpRoom());
 				spawned = true;
@@ -235,6 +237,8 @@ public class Imp extends NPC {
 				} while (reward.cursed);
 				reward.upgrade( 2 );
 				reward.cursed = true;
+			} else if (Dungeon.depth == 19) {
+				spawned = true;
 			}
 
 			return rooms;
