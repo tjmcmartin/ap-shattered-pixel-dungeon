@@ -182,6 +182,10 @@ public class APManager {
         processingItems = false;
     }
 
+    public static boolean isUnchecked(APLocation loc) {
+        return !completedChecks.contains(loc);
+    }
+
     public static boolean hasItem (APItem item){
         return receivedItems.containsKey(item);
     }

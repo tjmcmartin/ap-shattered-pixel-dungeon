@@ -23,6 +23,9 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Challenges;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APLocation;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
+import com.shatteredpixel.shatteredpixeldungeon.items.APLootItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -93,8 +96,15 @@ public class PitRoom extends SpecialRoom {
 
 		level.drop( new CrystalKey( Dungeon.depth ), remains );
 	}
-	
+
+	private static boolean apItem;
 	private static Item prize( Level level ) {
+
+		APLocation loc = APLocation.fromNames(Dungeon.hero.heroClass, PitRoom.class);
+		if (!apItem && APManager.isUnchecked( loc )) {
+			return new APLootItem( loc );
+		}
+
 		return Generator.random( Random.oneOf(
 			Generator.Category.POTION,
 			Generator.Category.SCROLL,

@@ -1,6 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ap;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -1210,6 +1211,10 @@ public enum APLocation {
             }
         }
         return null;
+    }
+
+    public static APLocation fromNames(HeroClass heroClass, Class<?> roomClass) {
+        return fromString( heroClass.name().toUpperCase() + "_" + roomClass.getSimpleName().replaceAll("(?<=.)(?=\\p{Lu})", "_").toUpperCase() );
     }
 
     public static APLocation fromId(int apid) {

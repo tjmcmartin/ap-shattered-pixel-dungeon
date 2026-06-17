@@ -25,7 +25,9 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Blob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.ToxicGas;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APLocation;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
+import com.shatteredpixel.shatteredpixeldungeon.items.APLootItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -99,9 +101,12 @@ public class ToxicGasRoom extends SpecialRoom {
 		mainGold.quantity(mainGold.quantity()*2);
 		level.drop(mainGold, furthestPos).type = Heap.Type.SKELETON;
 
+		boolean apItem = false;
+		APLocation loc = APLocation.fromNames(Dungeon.hero.heroClass, ToxicGasRoom.class);
 		for (int i = 0; i < 2; i++){
 			Item item = level.findPrizeItem(TrinketCatalyst.class);
-			if (item == null) item = new Gold().random();
+			if (!apItem && APManager.isUnchecked( loc )) item = new APLootItem( loc );
+			else if (item == null) item = new Gold().random();
 			level.drop(item, goldPositions.remove(0)).type = Heap.Type.CHEST;
 		}
 

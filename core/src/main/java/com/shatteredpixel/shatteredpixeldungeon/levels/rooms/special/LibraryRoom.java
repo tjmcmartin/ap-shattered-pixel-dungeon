@@ -23,8 +23,11 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APLocation;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
+import com.shatteredpixel.shatteredpixeldungeon.items.APLootItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
 import com.shatteredpixel.shatteredpixeldungeon.items.keys.IronKey;
 import com.shatteredpixel.shatteredpixeldungeon.items.scrolls.Scroll;
@@ -55,9 +58,18 @@ public class LibraryRoom extends SpecialRoom {
 				pos = level.pointToCell(random());
 			} while (level.map[pos] != Terrain.EMPTY_SP || level.heaps.get( pos ) != null);
 			Item item;
-			if (i == 0)
-				item = Random.Int(2) == 0 ? new ScrollOfIdentify() : new ScrollOfRemoveCurse();
-			else
+			if (i == 0) {
+				boolean hasSOI = APManager.hasItem(APItem.SCROLL_OF_IDENTIFY);
+				boolean hasSORC = APManager.hasItem(APItem.SCROLL_OF_REMOVE_CURSE);
+				if (hasSOI && hasSORC)
+					item = Random.Int(2) == 0 ? new ScrollOfIdentify() : new ScrollOfRemoveCurse();
+				else if (hasSOI)
+					item = new ScrollOfIdentify();
+				else if (hasSORC)
+					item = new ScrollOfRemoveCurse();
+				else
+					item = new Gold().random();
+			} else
 				item = prize( level );
 			level.drop( item, pos );
 		}
@@ -68,8 +80,14 @@ public class LibraryRoom extends SpecialRoom {
 			level.addItemToSpawn(new IronKey(Dungeon.depth));
 		}
 	}
-	
+
+	private static boolean apItem;
 	private static Item prize( Level level ) {
+
+		APLocation loc = APLocation.fromNames(Dungeon.hero.heroClass, LibraryRoom.class);
+		if (!apItem && APManager.isUnchecked( loc )) {
+			return new APLootItem( loc );
+		}
 		
 		Item prize = level.findPrizeItem( TrinketCatalyst.class );
 		if (prize == null){

@@ -31,9 +31,11 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.blobs.Freezing;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Burning;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APLocation;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BlobEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.ElmoParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.APLootItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Honeypot;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -117,7 +119,13 @@ public class MagicalFireRoom extends SpecialRoom {
 
 	}
 
+	private static boolean apItem;
 	private static Item prize( Level level ) {
+
+		APLocation loc = APLocation.fromNames(Dungeon.hero.heroClass, MagicalFireRoom.class);
+		if (!apItem && APManager.isUnchecked( loc )) {
+			return new APLootItem( loc );
+		}
 
 		if (Random.Int(3) != 0){
 			Item prize = level.findPrizeItem();

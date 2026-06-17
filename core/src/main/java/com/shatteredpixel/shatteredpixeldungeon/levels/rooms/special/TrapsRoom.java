@@ -23,7 +23,9 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APLocation;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
+import com.shatteredpixel.shatteredpixeldungeon.items.APLootItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
@@ -128,6 +130,11 @@ public class TrapsRoom extends SpecialRoom {
 	}
 	
 	private static Item prize( Level level ) {
+
+		APLocation loc = APLocation.fromNames(Dungeon.hero.heroClass, TrapsRoom.class);
+		if (APManager.isUnchecked( loc )) {
+			return new APLootItem( loc );
+		}
 
 		Item prize;
 

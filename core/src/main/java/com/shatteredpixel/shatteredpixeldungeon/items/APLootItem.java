@@ -24,6 +24,9 @@ public class APLootItem extends Item {
     public APLootItem(int depth) {
         location = APManager.getNextShopLocation(depth);
     }
+    public APLootItem(APLocation location) {
+        this.location = location;
+    }
 
     @Override
     public ArrayList<String> actions(Hero hero) {

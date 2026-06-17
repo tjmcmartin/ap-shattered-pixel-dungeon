@@ -23,7 +23,9 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.special;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APLocation;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
+import com.shatteredpixel.shatteredpixeldungeon.items.APLootItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -85,7 +87,14 @@ public class ArmoryRoom extends SpecialRoom {
 
 	//only a max of 1 prize from each category can be dropped at a time
 	private static float[] prizeCats;
+	private static boolean apItem;
 	private static Item prize( Level level ) {
+
+		APLocation loc = APLocation.fromNames(Dungeon.hero.heroClass, ArmoryRoom.class);
+		if (!apItem && APManager.isUnchecked( loc )) {
+			return new APLootItem( loc );
+		}
+
 		int index = Random.chances(prizeCats);
 		Item prize;
 		prizeCats[index] = 0;
