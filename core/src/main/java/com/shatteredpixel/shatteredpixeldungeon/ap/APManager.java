@@ -73,7 +73,6 @@ public class APManager {
         //TODO fix once ap side integrated
         GLog.w("[AP] " + Messages.get(APManager.class, "item_sent", randItem, "player"));
 
-        receiveItem(APItem.POISON_TRAP);
         receiveItem(randItem);
     }
 

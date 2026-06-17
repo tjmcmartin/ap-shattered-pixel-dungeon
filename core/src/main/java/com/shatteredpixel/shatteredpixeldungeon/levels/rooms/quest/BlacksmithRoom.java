@@ -24,6 +24,8 @@ package com.shatteredpixel.shatteredpixeldungeon.levels.rooms.quest;
 import com.shatteredpixel.shatteredpixeldungeon.Assets;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.npcs.Blacksmith;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Level;
 import com.shatteredpixel.shatteredpixeldungeon.levels.Terrain;
@@ -74,29 +76,31 @@ public class BlacksmithRoom extends StandardRoom {
 					Generator.Category.MISSILE
 				) ), pos );
 		}
-		
-		Blacksmith npc = new Blacksmith();
-		do {
-			npc.pos = level.pointToCell(random( 2 ));
-		} while (level.heaps.get( npc.pos ) != null);
-		level.mobs.add( npc );
 
-		int entrancePos;
-		do {
-			entrancePos = level.pointToCell(random( 2 ));
-		} while (level.heaps.get( npc.pos ) != null || entrancePos == npc.pos);
+		if (APManager.hasItem(APItem.BLACKSMITH_QUEST)) {
+			Blacksmith npc = new Blacksmith();
+			do {
+				npc.pos = level.pointToCell(random(2));
+			} while (level.heaps.get(npc.pos) != null);
+			level.mobs.add(npc);
 
-		QuestEntrance vis = new QuestEntrance();
-		vis.pos(entrancePos, level);
-		level.customTiles.add(vis);
+			int entrancePos;
+			do {
+				entrancePos = level.pointToCell(random(2));
+			} while (level.heaps.get(npc.pos) != null || entrancePos == npc.pos);
 
-		level.transitions.add(new LevelTransition(level,
-				entrancePos,
-				LevelTransition.Type.BRANCH_EXIT,
-				Dungeon.depth,
-				Dungeon.branch + 1,
-				LevelTransition.Type.BRANCH_ENTRANCE));
-		Painter.set(level, entrancePos, Terrain.EXIT);
+			QuestEntrance vis = new QuestEntrance();
+			vis.pos(entrancePos, level);
+			level.customTiles.add(vis);
+
+			level.transitions.add(new LevelTransition(level,
+					entrancePos,
+					LevelTransition.Type.BRANCH_EXIT,
+					Dungeon.depth,
+					Dungeon.branch + 1,
+					LevelTransition.Type.BRANCH_ENTRANCE));
+			Painter.set(level, entrancePos, Terrain.EXIT);
+		}
 
 		for(Point p : getPoints()) {
 			int cell = level.pointToCell(p);

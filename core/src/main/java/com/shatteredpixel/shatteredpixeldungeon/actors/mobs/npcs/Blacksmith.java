@@ -26,6 +26,8 @@ import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.Char;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.AscensionChallenge;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Gold;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -353,7 +355,7 @@ public class Blacksmith extends NPC {
 		}
 		
 		public static ArrayList<Room> spawn( ArrayList<Room> rooms ) {
-			if (!spawned && Dungeon.depth > 11 && Random.Int( 15 - Dungeon.depth ) == 0) {
+			if (!spawned && Dungeon.depth > 11 && APManager.hasItem(APItem.BLACKSMITH_QUEST) && Random.Int( 15 - Dungeon.depth ) == 0) {
 				
 				rooms.add(new BlacksmithRoom());
 				spawned = true;
@@ -364,6 +366,11 @@ public class Blacksmith extends NPC {
 				given = false;
 				generateRewards( true );
 				
+			} else if (Dungeon.depth == 14) {
+				rooms.add(new BlacksmithRoom());
+				spawned = true;
+
+				generateRewards( true );
 			}
 			return rooms;
 		}
