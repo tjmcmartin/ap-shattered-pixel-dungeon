@@ -110,6 +110,7 @@ public class Dungeon {
 		INT_STONE,
 		TRINKET_CATA,
 		LAB_ROOM, //actually a room, but logic is the same
+		AP_LOOT_ITEM,
 
 		//Health potion sources
 		//enemies
@@ -561,6 +562,16 @@ public class Dungeon {
 		int floorThisSet = (depth % 5);
 		//chance is floors left / scrolls left
 		return Random.Int(5 - floorThisSet) < asLeftThisSet;
+	}
+
+	public static boolean apLootItemNeeded() {
+		//3 items each floor set
+		int apItemLeftThisSet = 3 - (LimitedDrops.AP_LOOT_ITEM.count - (depth / 5));
+		if (apItemLeftThisSet <= 0) return false;
+
+		int floorThisSet = (depth % 5);
+		return Random.Int(5 - floorThisSet) < apItemLeftThisSet;
+
 	}
 
 	public static boolean enchStoneNeeded(){

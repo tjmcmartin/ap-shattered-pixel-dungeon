@@ -19,10 +19,12 @@ public class APLootItem extends Item {
     private APLocation location;
 
     public APLootItem() {
-        this(Dungeon.depth);
+        this(Dungeon.depth, true);
     }
-    public APLootItem(int depth) {
-        location = APManager.getNextShopLocation(depth);
+    public APLootItem(boolean forShop) { this(Dungeon.depth, forShop); }
+    public APLootItem(int depth, boolean forShop) {
+        if (forShop) location = APManager.getNextShopLocation(depth);
+        else location = APManager.getNextLootLocation(depth);
     }
     public APLootItem(APLocation location) {
         this.location = location;

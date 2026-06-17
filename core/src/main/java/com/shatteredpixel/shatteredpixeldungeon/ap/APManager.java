@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Bleeding;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -44,17 +43,26 @@ public class APManager {
     public static HashSet<APItem> availableTrinkets = new HashSet<>();
     public static Map<Subcategory, HashSet<APItem>> availableItems = new HashMap<>();
     public static Map<APLocation.shopLocationType, List<Integer>> shopLocations = new HashMap<>();
+    public static Map<APLocation.lootLocationType, List<Integer>> lootLocations = new HashMap<>();
 
     static {
         for (Subcategory cat : Subcategory.values()) {
             availableItems.put(cat, new HashSet<>());
         }
-        for (APLocation.shopLocationType shop : APLocation.shopLocationType.values()) {
-            shopLocations.put(shop, new ArrayList<>());
-            for (int i=0; i<shop.total-1; i++) {
-                shopLocations.get(shop).add(shop.startApid+i);
+        for (APLocation.shopLocationType region : APLocation.shopLocationType.values()) {
+            shopLocations.put(region, new ArrayList<>());
+            for (int i = 0; i < region.total - 1; i++) {
+                shopLocations.get(region).add(region.startApid + i);
             }
-            Collections.shuffle( shopLocations.get(shop) );
+            Collections.shuffle(shopLocations.get(region));
+        }
+
+        for (APLocation.lootLocationType region : APLocation.lootLocationType.values()) {
+            lootLocations.put(region, new ArrayList<>());
+            for (int i = 0; i < region.total; i++) {
+                lootLocations.get(region).add(region.startApid + i);
+            }
+            Collections.shuffle(lootLocations.get(region));
         }
     }
 
@@ -225,6 +233,11 @@ public class APManager {
 
     public static APLocation getNextShopLocation(int depth) {
         List<Integer> locations = shopLocations.get( APLocation.shopLocationType.byDepth(depth) );
+        return APLocation.fromId( locations.remove(locations.size()-1) );
+    }
+
+    public static APLocation getNextLootLocation(int depth) {
+        List<Integer> locations = lootLocations.get( APLocation.lootLocationType.byDepth(depth) );
         return APLocation.fromId( locations.remove(locations.size()-1) );
     }
 

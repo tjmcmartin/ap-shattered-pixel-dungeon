@@ -1191,6 +1191,76 @@ public enum APLocation {
         }
     }
 
+    public enum lootLocationType {
+        WARRIOR_SEWERS (3050, 15),
+        WARRIOR_PRISON (3065, 13),
+        WARRIOR_CAVES (3078, 10),
+        WARRIOR_CITY (3088, 7),
+        WARRIOR_HALLS (3095, 5),
+        MAGE_SEWERS (3150, 15),
+        MAGE_PRISON (3165, 13),
+        MAGE_CAVES (3178, 10),
+        MAGE_CITY (3188, 7),
+        MAGE_HALLS (3195, 5),
+        ROGUES_SEWERS (3250, 15),
+        ROGUE_PRISON (3265, 13),
+        ROGUE_CAVES (3278, 10),
+        ROGUE_CITY (3288, 7),
+        ROGUE_HALLS (3295, 5),
+        HUNTRESS_SEWERS (3350, 15),
+        HUNTRESS_PRISON (3365, 13),
+        HUNTRESS_CAVES (3378, 10),
+        HUNTRESS_CITY (3388, 7),
+        HUNTRESS_HALLS (3395, 5),
+        DUELIST_SEWERS (3450, 15),
+        DUELIST_PRISON (3465, 13),
+        DUELIST_CAVES (3478, 10),
+        DUELIST_CITY (3488, 7),
+        DUELIST_HALLS (3495, 5),
+        CLERIC_SEWERS (3550, 15),
+        CLERIC_PRISON (3565, 13),
+        CLERIC_CAVES (3578, 10),
+        CLERIC_CITY (3588, 7),
+        CLERIC_HALLS (3595 , 5);
+
+        public final int startApid;
+        public final int total;
+        lootLocationType(int startApid, int total) {
+            this.startApid = startApid;
+            this.total = total;
+        }
+
+        public static lootLocationType fromString(String name) {
+            for (lootLocationType location : values()) {
+                if (location.name().equals(name)) {
+                    return location;
+                }
+            }
+            return null;
+        }
+
+        public static String nameFromDepth(int depth) {
+            switch(depth) {
+                case 1: case 2: case 3: case 4:
+                    return "SEWERS";
+                case 6: case 7: case 8: case 9:
+                    return "PRISON";
+                case 11: case 12: case 13: case 14:
+                    return "CAVES";
+                case 16: case 17: case 18: case 19:
+                    return "CITY";
+                case 21: case 22: case 23: case 24:
+                    return "HALLS";
+                default:
+                    return null;
+            }
+        }
+
+        public static lootLocationType byDepth(int depth) {
+            return fromString( Dungeon.hero.heroClass.name() + "_" + nameFromDepth(depth) );
+        }
+    }
+
     public final int apid;
     APLocation(int apid) {
         this.apid = apid;

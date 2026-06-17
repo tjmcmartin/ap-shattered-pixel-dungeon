@@ -68,6 +68,7 @@ import com.shatteredpixel.shatteredpixeldungeon.effects.CellEmitter;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.FlowParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.SacrificialParticle;
 import com.shatteredpixel.shatteredpixeldungeon.effects.particles.WindParticle;
+import com.shatteredpixel.shatteredpixeldungeon.items.APLootItem;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.items.Heap;
 import com.shatteredpixel.shatteredpixeldungeon.items.Item;
@@ -252,6 +253,13 @@ public abstract class Level implements Bundlable {
 			if ( Dungeon.trinketCataNeeded() ){
 				Dungeon.LimitedDrops.TRINKET_CATA.drop();
 				addItemToSpawn( new TrinketCatalyst());
+			}
+			if ( Dungeon.apLootItemNeeded() ) {
+				Dungeon.LimitedDrops.AP_LOOT_ITEM.count++;
+				//Since we want 2 or 3 per floor, spawn the third one based off of a coin flip
+				if (Dungeon.LimitedDrops.AP_LOOT_ITEM.count % 3 != 0 || Random.Int(2) == 0) {
+					addItemToSpawn( new APLootItem(false));
+				}
 			}
 			
 			if (Dungeon.depth > 1) {
