@@ -69,6 +69,7 @@ public class StorageRoom extends SpecialRoom {
 
 		APLocation loc = APLocation.fromNames(Dungeon.hero.heroClass, StorageRoom.class);
 		if (!apItem && APManager.isUnchecked( loc )) {
+			apItem = true;
 			return new APLootItem( loc );
 		}
 

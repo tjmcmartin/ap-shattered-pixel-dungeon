@@ -124,6 +124,7 @@ public class MagicalFireRoom extends SpecialRoom {
 
 		APLocation loc = APLocation.fromNames(Dungeon.hero.heroClass, MagicalFireRoom.class);
 		if (!apItem && APManager.isUnchecked( loc )) {
+			apItem = true;
 			return new APLootItem( loc );
 		}
 

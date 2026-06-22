@@ -55,8 +55,10 @@ public class TreasuryRoom extends SpecialRoom {
 		APLocation loc = APLocation.fromNames(Dungeon.hero.heroClass, TreasuryRoom.class);
 		for (int i=0; i < n; i++) {
 			Item item = level.findPrizeItem(TrinketCatalyst.class);
-			if (!apItem && APManager.isUnchecked( loc )) item = new APLootItem( loc );
-			else if (item == null) item = new Gold().random();
+			if (!apItem && APManager.isUnchecked( loc )) {
+				item = new APLootItem( loc );
+				apItem = true;
+			} else if (item == null) item = new Gold().random();
 
 			int pos;
 			do {

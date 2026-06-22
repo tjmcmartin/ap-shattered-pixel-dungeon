@@ -102,6 +102,7 @@ public class PitRoom extends SpecialRoom {
 
 		APLocation loc = APLocation.fromNames(Dungeon.hero.heroClass, PitRoom.class);
 		if (!apItem && APManager.isUnchecked( loc )) {
+			apItem = true;
 			return new APLootItem( loc );
 		}
 

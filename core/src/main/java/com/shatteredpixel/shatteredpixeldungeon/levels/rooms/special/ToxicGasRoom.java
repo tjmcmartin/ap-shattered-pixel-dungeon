@@ -105,8 +105,10 @@ public class ToxicGasRoom extends SpecialRoom {
 		APLocation loc = APLocation.fromNames(Dungeon.hero.heroClass, ToxicGasRoom.class);
 		for (int i = 0; i < 2; i++){
 			Item item = level.findPrizeItem(TrinketCatalyst.class);
-			if (!apItem && APManager.isUnchecked( loc )) item = new APLootItem( loc );
-			else if (item == null) item = new Gold().random();
+			if (!apItem && APManager.isUnchecked( loc )) {
+				apItem = true;
+				item = new APLootItem( loc );
+			} else if (item == null) item = new Gold().random();
 			level.drop(item, goldPositions.remove(0)).type = Heap.Type.CHEST;
 		}
 

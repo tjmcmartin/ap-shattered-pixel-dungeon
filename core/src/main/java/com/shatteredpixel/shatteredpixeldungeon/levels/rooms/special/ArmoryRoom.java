@@ -92,6 +92,7 @@ public class ArmoryRoom extends SpecialRoom {
 
 		APLocation loc = APLocation.fromNames(Dungeon.hero.heroClass, ArmoryRoom.class);
 		if (!apItem && APManager.isUnchecked( loc )) {
+			apItem = true;
 			return new APLootItem( loc );
 		}
 
