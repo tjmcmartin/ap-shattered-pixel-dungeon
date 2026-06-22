@@ -34,6 +34,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ap.APItem;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.ui.APStatBoard;
+import com.shatteredpixel.shatteredpixeldungeon.ui.APStatLabel;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.CheckBox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
@@ -88,6 +90,7 @@ public class HeroSelectScene extends PixelScene {
 	private ArrayList<StyledButton> heroBtns = new ArrayList<>();
 	private RenderedTextBlock heroName; //only on landscape
 	private RenderedTextBlock heroDesc; //only on landscape
+	private APStatBoard apStatBoard;
 	private StyledButton startBtn;
 	private IconButton infoButton;
 	private IconButton btnOptions;
@@ -132,6 +135,21 @@ public class HeroSelectScene extends PixelScene {
 		background.y = (Camera.main.height - background.height())/2f;
 		PixelScene.align(background);
 		add(background);
+
+		float leftPortion = Math.max(100, (Camera.main.width - insets.left - insets.right)/3f);
+		float rightPortion = Camera.main.width - insets.right - leftPortion - insets.left;
+		apStatBoard = new APStatBoard(rightPortion, background.height());
+		apStatBoard.visible = false;
+		apStatBoard.setPos(insets.left + leftPortion + (rightPortion - apStatBoard.width()) / 2, (Camera.main.height - apStatBoard.height()) / 2);
+		add(apStatBoard);
+		System.out.println(
+				"width= " + Camera.main.width
+				+"\ninsets= " + insets.right + insets.left
+				+"\nleft portion= " + leftPortion
+				+"\nright portion= " + rightPortion
+				+"\nwidth= " + apStatBoard.width()
+				+"\nx= " + (leftPortion + (rightPortion - apStatBoard.width()) / 2)
+		);
 
 		fadeLeft = new Image(TextureCache.createGradient(0xFF000000, 0xFF000000, 0x00000000));
 		fadeLeft.x = background.x-2;
@@ -429,6 +447,7 @@ public class HeroSelectScene extends PixelScene {
 		background.hardlight(1.5f,1.5f,1.5f);
 
 		float leftPortion = Math.max(100, (Camera.main.width - insets.left - insets.right)/3f);
+		float rightPortion = Camera.main.width - insets.left - insets.right - leftPortion;
 
 		if (landscape()) {
 
@@ -447,6 +466,8 @@ public class HeroSelectScene extends PixelScene {
 				heroDesc.setPos(Math.max(insets.left, (leftPortion - heroDesc.width())/2f), heroName.bottom() + 5);
 				align(heroDesc);
 			}
+
+			apStatBoard.visible = true;
 
 			btnFade.visible = btnFade.active = true;
 
