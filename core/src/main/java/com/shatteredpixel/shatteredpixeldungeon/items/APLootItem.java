@@ -41,7 +41,7 @@ public class APLootItem extends Item {
         hero.spendAndNext( pickupDelay() );
         Sample.INSTANCE.play(Assets.Sounds.ITEM);
 
-        APManager.checkLocation(location);
+        APManager.checkLocation(location, true);
 
         return true;
     }

@@ -854,6 +854,7 @@ public abstract class Mob extends Char {
 
 				APLocation location = APLocation.fromString(Dungeon.hero.heroClass.name().toUpperCase() + "_DEFEAT_" + getClass().getSimpleName());
 				if (location != null) {
+					if (APManager.isUnchecked(location)) APManager.kills.put(Dungeon.hero.heroClass, APManager.kills.get(Dungeon.hero.heroClass) + 1);
 					APManager.checkLocation(location);
 				}
 

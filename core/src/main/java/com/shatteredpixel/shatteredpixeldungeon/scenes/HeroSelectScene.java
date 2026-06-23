@@ -142,14 +142,6 @@ public class HeroSelectScene extends PixelScene {
 		apStatBoard.visible = false;
 		apStatBoard.setPos(insets.left + leftPortion + (rightPortion - apStatBoard.width()) / 2, (Camera.main.height - apStatBoard.height()) / 2);
 		add(apStatBoard);
-		System.out.println(
-				"width= " + Camera.main.width
-				+"\ninsets= " + insets.right + insets.left
-				+"\nleft portion= " + leftPortion
-				+"\nright portion= " + rightPortion
-				+"\nwidth= " + apStatBoard.width()
-				+"\nx= " + (leftPortion + (rightPortion - apStatBoard.width()) / 2)
-		);
 
 		fadeLeft = new Image(TextureCache.createGradient(0xFF000000, 0xFF000000, 0x00000000));
 		fadeLeft.x = background.x-2;
@@ -468,6 +460,7 @@ public class HeroSelectScene extends PixelScene {
 			}
 
 			apStatBoard.visible = true;
+			apStatBoard.setStats(cl);
 
 			btnFade.visible = btnFade.active = true;
 

@@ -1284,7 +1284,7 @@ public enum APLocation {
     }
 
     public static APLocation fromNames(HeroClass heroClass, Class<?> roomClass) {
-        return fromString( heroClass.name().toUpperCase() + "_" + roomClass.getSimpleName().replaceAll("(?<=.)(?=\\p{Lu})", "_").toUpperCase() );
+        return fromString( heroClass.name().toUpperCase() + "_" + roomClass.getSimpleName().replaceAll("(?<=[a-z])(?=[A-Z])", "_").toUpperCase() );
     }
 
     public static APLocation fromId(int apid) {

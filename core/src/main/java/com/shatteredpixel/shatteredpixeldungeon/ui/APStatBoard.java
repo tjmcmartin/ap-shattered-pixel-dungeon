@@ -1,10 +1,8 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
-import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.RatSprite;
-import com.watabou.noosa.BitmapText;
-import com.watabou.noosa.Camera;
-import com.watabou.noosa.ColorBlock;
 import com.watabou.noosa.Image;
 import com.watabou.noosa.ui.Component;
 
@@ -68,5 +66,16 @@ public class APStatBoard extends Component {
 
     private float getOffset() {
         return Math.min( (width - (sewersStats.width() + prisonStats.width()) )/4 , (width - (cavesStats.width() + cityStats.width()) )/4 );
+    }
+
+    public void setStats(HeroClass hero) {
+        levelClears.setText(hero, APManager.getClears(hero));
+        firstKills.setText(hero, APManager.getKills(hero));
+        sewersStats.setStats(hero);
+        prisonStats.setStats(hero);
+        cavesStats.setStats(hero);
+        cityStats.setStats(hero);
+        hallsStats.setStats(hero);
+        layout();
     }
 }

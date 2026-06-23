@@ -180,6 +180,32 @@ public class Dungeon {
 
 	}
 
+	public static enum Region {
+		SEWERS,
+		PRISON,
+		CAVES,
+		CITY,
+		HALLS;
+
+		public static Region byDepth() { return byDepth(depth); }
+		public static Region byDepth(int depth) {
+			switch (depth) {
+				case 1: case 2: case 3: case 4: case 5:
+					return SEWERS;
+				case 6: case 7: case 8: case 9: case 10:
+					return PRISON;
+				case 11: case 12: case 13: case 14: case 15:
+					return CAVES;
+				case 16: case 17: case 18: case 19: case 20:
+					return CITY;
+				case 21: case 22: case 23: case 24: case 25:
+					return HALLS;
+				default:
+					return null;
+			}
+		}
+	}
+
 	public static int challenges;
 	public static float mobsToChampion;
 

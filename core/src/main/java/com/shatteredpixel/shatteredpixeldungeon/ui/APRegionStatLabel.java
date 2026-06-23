@@ -1,5 +1,7 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
@@ -12,11 +14,14 @@ public class APRegionStatLabel extends Component {
     private RenderedTextBlock title;
     private APStatLabel apLootItems;
     private APStatLabel apShopItems;
+    private String region;
 
     public APRegionStatLabel(String region) {
         this(region, 10);
     }
     public APRegionStatLabel(String region, int size) {
+
+        this.region = region;
 
         title = PixelScene.renderTextBlock(region, size);
         add(title);
@@ -45,5 +50,11 @@ public class APRegionStatLabel extends Component {
 
         title.setPos(x + (width - title.width())/2 , y);
         PixelScene.align(title);
+    }
+
+    public void setStats(HeroClass hero) {
+        apLootItems.setText(hero, APManager.getRegionLootStat(hero, region.toUpperCase()));
+        apShopItems.setText(hero, APManager.getRegionShopStat(hero, region.toUpperCase()));
+        layout();
     }
 }

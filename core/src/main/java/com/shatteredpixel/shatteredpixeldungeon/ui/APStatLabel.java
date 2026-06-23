@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon.ui;
 
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.watabou.noosa.BitmapText;
 import com.watabou.noosa.Image;
@@ -48,6 +49,11 @@ public class APStatLabel extends Component {
 
     public void setGap(float gapPxls) {
         gap = gapPxls;
+        layout();
+    }
+
+    public void setText(HeroClass hero, String txt) {
+        text.text(txt);
         layout();
     }
 }

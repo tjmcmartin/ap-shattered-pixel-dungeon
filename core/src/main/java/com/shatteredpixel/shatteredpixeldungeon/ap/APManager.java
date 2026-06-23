@@ -44,6 +44,10 @@ public class APManager {
     public static Map<Subcategory, HashSet<APItem>> availableItems = new HashMap<>();
     public static Map<APLocation.shopLocationType, List<Integer>> shopLocations = new HashMap<>();
     public static Map<APLocation.lootLocationType, List<Integer>> lootLocations = new HashMap<>();
+    public static Map<HeroClass, Integer> kills = new HashMap<>();
+    public static Map<HeroClass, Integer> levelClears = new HashMap<>();
+    public static Map<HeroClass, Map<String, Integer>> regionLoot = new HashMap<>();
+    public static Map<HeroClass, Map<String, Integer>> regionShops = new HashMap<>();
 
     static {
         for (Subcategory cat : Subcategory.values()) {
@@ -64,15 +68,43 @@ public class APManager {
             }
             Collections.shuffle(lootLocations.get(region));
         }
+
+        for (HeroClass clazz : HeroClass.values()) {
+            kills.put(clazz, 0);
+            levelClears.put(clazz, 0);
+            regionLoot.put(clazz, new HashMap<>());
+            regionShops.put(clazz, new HashMap<>());
+
+            for (Dungeon.Region region : Dungeon.Region.values()) {
+                regionLoot.get(clazz).put(region.name(), 0);
+                regionShops.get(clazz).put(region.name(), 0);
+            }
+        }
     }
 
     public static void checkLocation(APLocation location) {
+        checkLocation(location, false);
+    }
+    public static void checkLocation(APLocation location, boolean statUpdateNeeded) {
 
         if (completedChecks.contains(location)) {
             return;
         }
 
         completedChecks.add(location);
+
+        if(statUpdateNeeded) {
+            String name = location.name().toLowerCase();
+            String region = Dungeon.Region.byDepth().name();
+            HeroClass heroClass = Dungeon.hero.heroClass;
+            if ( name.contains("room") || name.contains("item") ) {
+                regionLoot.get(heroClass).put(region, regionLoot.get(heroClass).get(region) + 1);
+            } else if ( name.contains("shop") && !name.contains("global") ) {
+                regionShops.get(heroClass).put(region, regionShops.get(heroClass).get(region) + 1);
+            } else {
+                GLog.n( "[WARNING] Stat for " + location.name() + " not stored properly");
+            }
+        }
 
 
         APItem randItem = APItem.values()[Random.Int(APItem.values().length)];
@@ -239,6 +271,22 @@ public class APManager {
     public static APLocation getNextLootLocation(int depth) {
         List<Integer> locations = lootLocations.get( APLocation.lootLocationType.byDepth(depth) );
         return APLocation.fromId( locations.remove(locations.size()-1) );
+    }
+
+    public static String getKills(HeroClass hero) {
+        return kills.get(hero).toString();
+    }
+
+    public static String getClears(HeroClass hero) {
+        return levelClears.get(hero).toString();
+    }
+
+    public static String getRegionLootStat(HeroClass hero, String region) {
+        return regionLoot.get(hero).get(region).toString();
+    }
+
+    public static String getRegionShopStat(HeroClass hero, String region) {
+        return regionShops.get(hero).get(region).toString();
     }
 
     private static final String RECEIVED_ITEM_NAMES = "received_items_names";

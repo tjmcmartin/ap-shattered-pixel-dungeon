@@ -651,6 +651,7 @@ public class GameScene extends PixelScene {
 			if (Dungeon.depth > 1 && Dungeon.depth < 27) {
 				APLocation location = APLocation.fromString(Dungeon.hero.heroClass.name().toUpperCase() + "_CLEAR_FLOOR_" + (Dungeon.depth - 1));
 				if (location != null) {
+					if (APManager.isUnchecked(location)) APManager.levelClears.put( Dungeon.hero.heroClass, APManager.levelClears.get(Dungeon.hero.heroClass) + 1);
 					APManager.checkLocation(location);
 				}
 			}
