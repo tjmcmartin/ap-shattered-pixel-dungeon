@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import com.shatteredpixel.shatteredpixeldungeon.APDataSaver;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
@@ -27,9 +28,16 @@ import com.watabou.utils.Reflection;
 public class APManager {
 
     private static final Set<APLocation> completedChecks = new HashSet<>();
+    public static int checksCount = 0;
+    public static int totalChecks;
     private static final HashMap<APItem, Integer> receivedItems = new HashMap<>();
     private static final Queue<APItem> pendingItems = new LinkedList<>();
     private static boolean processingItems = false;
+
+    public static String playerName;
+    public static int wins;
+    public static int requiredWins;
+
     public static int warrior_max_level = 30;
     public static int mage_max_level = 1;
     public static int rogue_max_level = 1;
@@ -49,10 +57,31 @@ public class APManager {
     public static Map<HeroClass, Map<String, Integer>> regionLoot = new HashMap<>();
     public static Map<HeroClass, Map<String, Integer>> regionShops = new HashMap<>();
 
-    static {
+    public static void reset() {
+
+        receivedItems.clear();
+        completedChecks.clear();
+        checksCount = 0;
+
+        wins = 0;
+
+        warrior_max_level = 30;
+        mage_max_level = 1;
+        rogue_max_level = 1;
+        huntress_max_level = 1;
+        duelist_max_level = 1;
+        cleric_max_level = 1;
+        max_weapon_tier = 0;
+        max_armor_tier = 0;
+        max_missile_tier = 0;
+        alchemy_level = 0;
+
+        availableItems.clear();
         for (Subcategory cat : Subcategory.values()) {
             availableItems.put(cat, new HashSet<>());
         }
+
+        shopLocations.clear();
         for (APLocation.shopLocationType region : APLocation.shopLocationType.values()) {
             shopLocations.put(region, new ArrayList<>());
             for (int i = 0; i < region.total - 1; i++) {
@@ -61,6 +90,7 @@ public class APManager {
             Collections.shuffle(shopLocations.get(region));
         }
 
+        lootLocations.clear();
         for (APLocation.lootLocationType region : APLocation.lootLocationType.values()) {
             lootLocations.put(region, new ArrayList<>());
             for (int i = 0; i < region.total; i++) {
@@ -69,6 +99,10 @@ public class APManager {
             Collections.shuffle(lootLocations.get(region));
         }
 
+        kills.clear();
+        levelClears.clear();
+        regionLoot.clear();
+        regionShops.clear();
         for (HeroClass clazz : HeroClass.values()) {
             kills.put(clazz, 0);
             levelClears.put(clazz, 0);
@@ -92,6 +126,7 @@ public class APManager {
         }
 
         completedChecks.add(location);
+        checksCount++;
 
         if(statUpdateNeeded) {
             String name = location.name().toLowerCase();
@@ -292,6 +327,13 @@ public class APManager {
     private static final String RECEIVED_ITEM_NAMES = "received_items_names";
     private static final String RECEIVED_ITEM_COUNTS = "received_item_counts";
     private static final String COMPLETED_CHECKS = "completed_check";
+    private static final String CHECKS_COUNT = "checks_count";
+    private static final String TOTAL_CHECKS = "total_checks";
+
+    private static final String PLAYER_NAME = "player_name";
+    private static final String WINS = "wins";
+    private static final String REQUIRED_WINS = "required_wins";
+
     private static final String WARRIOR_MAX_LEVEL = "warrior_max_level";
     private static final String MAGE_MAX_LEVEL = "mage_max_level";
     private static final String ROGUE_MAX_LEVEL = "rogue_max_level";
@@ -326,6 +368,12 @@ public class APManager {
             i++;
         }
         bundle.put(COMPLETED_CHECKS, locations);
+        bundle.put(CHECKS_COUNT, checksCount);
+        bundle.put(TOTAL_CHECKS, totalChecks);
+
+        bundle.put(PLAYER_NAME, playerName);
+        bundle.put(WINS, wins);
+        bundle.put(REQUIRED_WINS, requiredWins);
 
         bundle.put(WARRIOR_MAX_LEVEL, warrior_max_level);
         bundle.put(MAGE_MAX_LEVEL, mage_max_level);
@@ -342,19 +390,34 @@ public class APManager {
 
     }
 
+    public static void preview(APDataSaver.Info info, Bundle bundle) {
+        info.name = bundle.getString(PLAYER_NAME);
+
+        info.checkedLocations = bundle.getInt(CHECKS_COUNT);
+        info.totalLocations = bundle.getInt(TOTAL_CHECKS);
+
+        info.wins = bundle.getInt(WINS);
+        info.requiredWins = bundle.getInt(REQUIRED_WINS);
+    }
+
     public static void restore( Bundle bundle) {
 
-        receivedItems.clear();
-        completedChecks.clear();
+        reset();
 
         String[] itemNames = bundle.getStringArray(RECEIVED_ITEM_NAMES);
         int [] itemCounts = bundle.getIntArray(RECEIVED_ITEM_COUNTS);
 
         for (int i = 0; i < itemNames.length; i++) {
-            receivedItems.put(APItem.fromString( itemNames[i] ), itemCounts[i]);
+            APItem item = APItem.fromString( itemNames[i] );
+            receivedItems.put(item, itemCounts[i]);
 
-            //TODO recreate availableItems and availableTrinkets
-
+            switch (item.getCategory()) {
+                case TRINKET:
+                    availableTrinkets.add(item);
+                    break;
+                case EQUIPMENT:
+                    availableItems.get(item.getSubcategory()).add(item);
+            }
         }
 
         String[] locations = bundle.getStringArray(COMPLETED_CHECKS);
@@ -362,6 +425,12 @@ public class APManager {
         for (String location : locations) {
             completedChecks.add(APLocation.fromString( location ));
         }
+        checksCount = bundle.getInt(CHECKS_COUNT);
+        totalChecks = bundle.getInt(TOTAL_CHECKS);
+
+        playerName = bundle.getString(PLAYER_NAME);
+        wins = bundle.getInt(WINS);
+        requiredWins = bundle.getInt(REQUIRED_WINS);
 
         warrior_max_level = bundle.getInt(WARRIOR_MAX_LEVEL);
         mage_max_level = bundle.getInt(MAGE_MAX_LEVEL);

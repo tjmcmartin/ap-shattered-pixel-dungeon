@@ -21,14 +21,18 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.scenes;
 
+import com.shatteredpixel.shatteredpixeldungeon.APDataSaver;
 import com.shatteredpixel.shatteredpixeldungeon.Badges;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.SPDSettings;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.journal.Journal;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Button;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -166,15 +170,14 @@ public class StartScene extends PixelScene {
 	private static class SaveSlotButton extends Button {
 		
 		private NinePatch bg;
-		
-		private Image hero;
+
 		private RenderedTextBlock name;
 		private RenderedTextBlock lastPlayed;
 		
-		private Image steps;
-		private BitmapText depth;
-		private Image classIcon;
-		private BitmapText level;
+		private Image apItem;
+		private BitmapText locations;
+		private Image trophy;
+		private BitmapText wins;
 		
 		private int slot;
 		private boolean newGame;
@@ -200,44 +203,31 @@ public class StartScene extends PixelScene {
 			if (newGame){
 				name.text( Messages.get(StartScene.class, "new"));
 				
-				if (hero != null){
-					remove(hero);
-					hero = null;
-					remove(steps);
-					steps = null;
-					remove(depth);
-					depth = null;
-					remove(classIcon);
-					classIcon = null;
-					remove(level);
-					level = null;
+				if (apItem != null){
+					remove(apItem);
+					apItem = null;
+					remove(locations);
+					locations = null;
+					remove(trophy);
+					trophy = null;
+					remove(wins);
+					wins = null;
 				}
 			} else {
+
+				APDataSaver.Info slotInfo = APDataSaver.getSlotInfo(slot);
 				
-				if (info.subClass != HeroSubClass.NONE){
-					name.text(Messages.titleCase(info.subClass.title()));
-				} else {
-					name.text(Messages.titleCase(info.heroClass.title()));
-				}
-				
-				if (hero == null){
-					hero = new Image(info.heroClass.spritesheet(), 0, 15*info.armorTier, 12, 15);
-					add(hero);
-					
-					steps = new Image(Icons.get(Icons.STAIRS));
-					add(steps);
-					depth = new BitmapText(PixelScene.pixelFont);
-					add(depth);
-					
-					classIcon = new Image(Icons.get(info.heroClass));
-					add(classIcon);
-					level = new BitmapText(PixelScene.pixelFont);
-					add(level);
-				} else {
-					hero.copy(new Image(info.heroClass.spritesheet(), 0, 15*info.armorTier, 12, 15));
-					
-					classIcon.copy(Icons.get(info.heroClass));
-				}
+				name.text(slotInfo.name);
+
+				apItem = new Image(new ItemSprite(ItemSpriteSheet.AP_ITEM));
+				add(apItem);
+				locations = new BitmapText(PixelScene.pixelFont);
+				add(locations);
+
+				trophy = new Image(Icons.get( Icons.CHALLENGE_COLOR ));
+				add(trophy);
+				wins = new BitmapText(PixelScene.pixelFont);
+				add(wins);
 
 				long diff = Game.realTime - info.lastPlayed;
 				if (diff > 99L * 30 * 24 * 60 * 60_000){
@@ -254,33 +244,23 @@ public class StartScene extends PixelScene {
 					lastPlayed.text(Messages.get(StartScene.class, "months_ago", diff / (30L * 24 * 60 * 60_000)));
 				}
 				
-				depth.text(Integer.toString(info.depth));
-				depth.measure();
+				locations.text( slotInfo.checkedLocations + "/" + slotInfo.totalLocations );
+				locations.measure();
 				
-				level.text(Integer.toString(info.level));
-				level.measure();
+				wins.text( slotInfo.wins + "/" + slotInfo.requiredWins );
+				wins.measure();
 				
-				if (info.challenges > 0){
-					name.hardlight(Window.TITLE_COLOR);
-					lastPlayed.hardlight(Window.TITLE_COLOR);
-					depth.hardlight(Window.TITLE_COLOR);
-					level.hardlight(Window.TITLE_COLOR);
-				} else {
-					name.resetColor();
-					lastPlayed.resetColor();
-					depth.resetColor();
-					level.resetColor();
-				}
-
-				if (info.daily){
-					if (info.dailyReplay){
-						steps.hardlight(1f, 0.5f, 2f);
-					} else {
-						steps.hardlight(0.5f, 1f, 2f);
-					}
-				} else if (!info.customSeed.isEmpty()){
-					steps.hardlight(1f, 1.5f, 0.67f);
-				}
+//				if (info.challenges > 0){              keeping this for later use? <----------------
+//					name.hardlight(Window.TITLE_COLOR);
+//					lastPlayed.hardlight(Window.TITLE_COLOR);
+//					locations.hardlight(Window.TITLE_COLOR);
+//					wins.hardlight(Window.TITLE_COLOR);
+//				} else {
+//					name.resetColor();
+//					lastPlayed.resetColor();
+//					locations.resetColor();
+//					wins.resetColor();
+//				}
 				
 			}
 			
@@ -295,37 +275,33 @@ public class StartScene extends PixelScene {
 			bg.y = y;
 			bg.size( width, height );
 			
-			if (hero != null){
-				hero.x = x+8;
-				hero.y = y + (height - hero.height())/2f;
-				align(hero);
-				
+			if (apItem != null){
 				name.setPos(
-						hero.x + hero.width() + 6,
-						y + (height - name.height() - lastPlayed.height() - 2)/2f
+						x+8,
+						y + (height - name.height())/2f
 				);
 				align(name);
 
 				lastPlayed.setPos(
-						hero.x + hero.width() + 6,
+						x + 8,
 						name.bottom()+2
 				);
 				
-				classIcon.x = x + width - 24 + (16 - classIcon.width())/2f;
-				classIcon.y = y + (height - classIcon.height())/2f;
-				align(classIcon);
+				trophy.x = x + width - 24 + (16 - trophy.width())/2f;
+				trophy.y = y + (height - trophy.height())/2f;
+				align(trophy);
 				
-				level.x = classIcon.x + (classIcon.width() - level.width()) / 2f;
-				level.y = classIcon.y + (classIcon.height() - level.height()) / 2f + 1;
-				align(level);
+				wins.x = trophy.x + (trophy.width() - wins.width()) / 2f;
+				wins.y = trophy.y + (trophy.height() - wins.height()) / 2f + 1;
+				align(wins);
 				
-				steps.x = x + width - 40 + (16 - steps.width())/2f;
-				steps.y = y + (height - steps.height())/2f;
-				align(steps);
+				apItem.x = x + width - 40 + (16 - apItem.width())/2f;
+				apItem.y = y + (height - apItem.height())/2f;
+				align(apItem);
 				
-				depth.x = steps.x + (steps.width() - depth.width()) / 2f;
-				depth.y = steps.y + (steps.height() - depth.height()) / 2f + 1;
-				align(depth);
+				locations.x = apItem.x + (apItem.width() - locations.width()) / 2f;
+				locations.y = apItem.y + (apItem.height() - locations.height()) / 2f + 1;
+				align(lastPlayed);
 				
 			} else {
 				name.setPos(
@@ -343,6 +319,8 @@ public class StartScene extends PixelScene {
 			if (newGame) {
 				GamesInProgress.selectedClass = null;
 				GamesInProgress.curSlot = slot;
+
+				APManager.reset();
 
 				ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
 			} else {

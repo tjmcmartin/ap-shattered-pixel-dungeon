@@ -748,6 +748,8 @@ public class Dungeon {
 			saveGame( GamesInProgress.curSlot );
 			saveLevel( GamesInProgress.curSlot );
 
+			APDataSaver.save( GamesInProgress.curSlot );
+
 			GamesInProgress.set( GamesInProgress.curSlot );
 
 		}

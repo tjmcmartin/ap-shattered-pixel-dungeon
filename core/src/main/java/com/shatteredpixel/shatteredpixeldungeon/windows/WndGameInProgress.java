@@ -21,12 +21,14 @@
 
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
+import com.shatteredpixel.shatteredpixeldungeon.APDataSaver;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.PixelScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.StartScene;
@@ -39,6 +41,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.shatteredpixel.shatteredpixeldungeon.utils.DungeonSeed;
 import com.watabou.noosa.Game;
 
+import java.io.IOException;
 import java.util.Locale;
 
 public class WndGameInProgress extends Window {
@@ -117,14 +120,26 @@ public class WndGameInProgress extends Window {
 			@Override
 			protected void onClick() {
 				super.onClick();
-				
+
+				try {
+					APDataSaver.load(slot);
+				} catch (IOException e) {
+					ShatteredPixelDungeon.reportException(e);
+				}
+
+
+
 				GamesInProgress.curSlot = slot;
-				
-				Dungeon.hero = null;
-				Dungeon.daily = Dungeon.dailyReplay = false;
-				ActionIndicator.clearAction();
-				InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
-				ShatteredPixelDungeon.switchScene(InterlevelScene.class);
+
+				if ( GamesInProgress.gameExists(slot) ) {
+					Dungeon.hero = null;
+					Dungeon.daily = Dungeon.dailyReplay = false;
+					ActionIndicator.clearAction();
+					InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
+					ShatteredPixelDungeon.switchScene(InterlevelScene.class);
+				} else {
+					ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
+				}
 			}
 		};
 		
