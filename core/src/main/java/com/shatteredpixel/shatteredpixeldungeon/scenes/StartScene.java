@@ -135,29 +135,6 @@ public class StartScene extends PixelScene {
 				break;
 		}
 
-		StyledButton btnSort = new StyledButton(Chrome.Type.TOAST_TR, sortText, 6){
-			@Override
-			protected void onClick() {
-				super.onClick();
-
-				if (SPDSettings.gamesInProgressSort().equals("level")){
-					SPDSettings.gamesInProgressSort("last_played");
-				} else {
-					SPDSettings.gamesInProgressSort("level");
-				}
-
-				ShatteredPixelDungeon.seamlessResetScene();
-			}
-		};
-		btnSort.textColor(0xCCCCCC);
-
-		if (yPos + 10 > Camera.main.height) {
-			btnSort.setRect(slotLeft - btnSort.reqWidth() - 6, Camera.main.height - 14, btnSort.reqWidth() + 4, 12);
-		} else {
-			btnSort.setRect(slotLeft, yPos, btnSort.reqWidth() + 4, 12);
-		}
-		if (games.size() >= 2) add(btnSort);
-
 		fadeIn();
 		
 	}
@@ -278,7 +255,7 @@ public class StartScene extends PixelScene {
 			if (apItem != null){
 				name.setPos(
 						x+8,
-						y + (height - name.height())/2f
+						y + (height - name.height() - lastPlayed.height() - 2)/2f
 				);
 				align(name);
 

@@ -40,6 +40,32 @@ public class APDataSaver {
 
     }
 
+    public static int findSlot(String port, String name) {
+        System.out.println("Searching for a slot that matches port "+port+", name "+name);
+        for (int i = 1; i <= GamesInProgress.MAX_SLOTS; i++) {
+            Info slot = getSlotInfo(i);
+            System.out.println(
+                    (slot == null)? "slot was null" :
+                    "slot= "+i+", port= "+slot.port+", name="+slot.name
+            );
+            if (slot != null && name.equals(slot.name) && port.equals(slot.port)) {
+                System.out.println("Match found!");
+                return i;
+            }
+        }
+        System.out.println("No matches were found!");
+        return -1;
+    }
+
+    public static int getTotalSlots() {
+        int total = 0;
+        for (int i = 1; i <= GamesInProgress.MAX_SLOTS; i++) {
+            Info current = getSlotInfo(i);
+            if (current != null) total++;
+        }
+        return total;
+    }
+
     public static Info getSlotInfo(int slot) {
 
         if (slotStates.containsKey( slot )) {
@@ -71,6 +97,7 @@ public class APDataSaver {
     public static void setSlotInfo(int slot) {
         Info info = new Info();
 
+        info.port = APManager.port;
         info.name = APManager.playerName;
 
         info.checkedLocations = APManager.checksCount;
@@ -84,6 +111,7 @@ public class APDataSaver {
 
     public static class Info {
         public String name;
+        public String port;
 
         public int checkedLocations;
         public int totalLocations;

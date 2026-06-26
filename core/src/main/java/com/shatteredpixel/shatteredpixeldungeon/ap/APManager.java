@@ -2,6 +2,8 @@ package com.shatteredpixel.shatteredpixeldungeon.ap;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -27,14 +29,15 @@ import com.watabou.utils.Reflection;
 
 public class APManager {
 
-    private static final Set<APLocation> completedChecks = new HashSet<>();
+    private static final EnumSet<APLocation> completedChecks = EnumSet.noneOf(APLocation.class);
     public static int checksCount = 0;
     public static int totalChecks;
-    private static final HashMap<APItem, Integer> receivedItems = new HashMap<>();
+    private static final EnumMap<APItem, Integer> receivedItems = new EnumMap<>(APItem.class);
     private static final Queue<APItem> pendingItems = new LinkedList<>();
     private static boolean processingItems = false;
 
     public static String playerName;
+    public static String port;
     public static int wins;
     public static int requiredWins;
 
@@ -48,14 +51,14 @@ public class APManager {
     public static int max_armor_tier = 0;
     public static int max_missile_tier = 0;
     public static int alchemy_level = 0;
-    public static HashSet<APItem> availableTrinkets = new HashSet<>();
-    public static Map<Subcategory, HashSet<APItem>> availableItems = new HashMap<>();
-    public static Map<APLocation.shopLocationType, List<Integer>> shopLocations = new HashMap<>();
-    public static Map<APLocation.lootLocationType, List<Integer>> lootLocations = new HashMap<>();
-    public static Map<HeroClass, Integer> kills = new HashMap<>();
-    public static Map<HeroClass, Integer> levelClears = new HashMap<>();
-    public static Map<HeroClass, Map<String, Integer>> regionLoot = new HashMap<>();
-    public static Map<HeroClass, Map<String, Integer>> regionShops = new HashMap<>();
+    public static EnumSet<APItem> availableTrinkets = EnumSet.noneOf(APItem.class);
+    public static EnumMap<Subcategory, HashSet<APItem>> availableItems = new EnumMap<>(Subcategory.class);
+    public static EnumMap<APLocation.shopLocationType, List<Integer>> shopLocations = new EnumMap<>(APLocation.shopLocationType.class);
+    public static EnumMap<APLocation.lootLocationType, List<Integer>> lootLocations = new EnumMap<>(APLocation.lootLocationType.class);
+    public static EnumMap<HeroClass, Integer> kills = new EnumMap<>(HeroClass.class);
+    public static EnumMap<HeroClass, Integer> levelClears = new EnumMap<>(HeroClass.class);
+    public static EnumMap<HeroClass, Map<String, Integer>> regionLoot = new EnumMap<>(HeroClass.class);
+    public static EnumMap<HeroClass, Map<String, Integer>> regionShops = new EnumMap<>(HeroClass.class);
 
     public static void reset() {
 
@@ -101,7 +104,13 @@ public class APManager {
 
         kills.clear();
         levelClears.clear();
+        for (Map<String, Integer> map : regionLoot.values()) {
+            map.clear();
+        }
         regionLoot.clear();
+        for (Map<String, Integer> map : regionShops.values()) {
+            map.clear();
+        }
         regionShops.clear();
         for (HeroClass clazz : HeroClass.values()) {
             kills.put(clazz, 0);
@@ -114,6 +123,11 @@ public class APManager {
                 regionShops.get(clazz).put(region.name(), 0);
             }
         }
+    }
+
+    public static void setPlayerInfo(String url, String name) {
+        port = url;
+        playerName = name;
     }
 
     public static void checkLocation(APLocation location) {
@@ -331,6 +345,7 @@ public class APManager {
     private static final String TOTAL_CHECKS = "total_checks";
 
     private static final String PLAYER_NAME = "player_name";
+    private static final String PORT = "port";
     private static final String WINS = "wins";
     private static final String REQUIRED_WINS = "required_wins";
 
@@ -344,6 +359,18 @@ public class APManager {
     private static final String MAX_ARMOR_TIER = "max_armor_tier";
     private static final String MAX_MISSILE_TIER = "max_missile_tier";
     private static final String ALCHEMY_LEVEL = "alchemy_level";
+
+    private static final String KILL_KEYS = "kill_keys";
+    private static final String KILL_VALUES = "kill_values";
+    private static final String LEVEL_CLEAR_KEYS = "level_clear_keys";
+    private static final String LEVEL_CLEAR_VALUES = "level_clear_values";
+    private static final String REGION_LOOT_KEYS = "region_loot_keys";
+    private static final String REGION_LOOT_REGIONS = "region_loot_regions";
+    private static final String REGION_LOOT_VALUES = "region_loot_values";
+    private static final String REGION_SHOP_KEYS = "region_shop_keys";
+    private static final String REGION_SHOP_REGIONS = "region_shop_regions";
+    private static final String REGION_SHOP_VALUES = "region_shop_values";
+
 
     public static void store(Bundle bundle) {
 
@@ -372,6 +399,7 @@ public class APManager {
         bundle.put(TOTAL_CHECKS, totalChecks);
 
         bundle.put(PLAYER_NAME, playerName);
+        bundle.put(PORT, port);
         bundle.put(WINS, wins);
         bundle.put(REQUIRED_WINS, requiredWins);
 
@@ -388,10 +416,74 @@ public class APManager {
 
         bundle.put(ALCHEMY_LEVEL, alchemy_level);
 
+        String[] killKeys = new String[kills.size()];
+        int[] killValues = new int[kills.size()];
+
+        i = 0;
+        for (Map.Entry<HeroClass, Integer> entry : kills.entrySet()) {
+            killKeys[i] = entry.getKey().name();
+            killValues[i] = entry.getValue();
+            i++;
+        }
+        bundle.put(KILL_KEYS, killKeys);
+        bundle.put(KILL_VALUES, killValues);
+
+        String[] levelClearKeys = new String[levelClears.size()];
+        int[] levelClearValues = new int[levelClears.size()];
+
+        i = 0;
+        for (Map.Entry<HeroClass, Integer> entry : levelClears.entrySet()) {
+            levelClearKeys[i] = entry.getKey().name();
+            levelClearValues[i] = entry.getValue();
+            i++;
+        }
+        bundle.put(LEVEL_CLEAR_KEYS, levelClearKeys);
+        bundle.put(LEVEL_CLEAR_VALUES, levelClearValues);
+
+        String[] regionLootKeys = new String[regionLoot.size()];
+        String[] regionLootRegions = new String[Dungeon.Region.values().length];
+        int[] regionLootValues = new int[Dungeon.Region.values().length];
+
+        i = 0;
+        int j;
+        for (Map.Entry<HeroClass, Map<String, Integer>> outerEntry : regionLoot.entrySet()) {
+            j = 0;
+            for (Map.Entry<String, Integer> entry : outerEntry.getValue().entrySet()) {
+                regionLootRegions[j] = entry.getKey();
+                regionLootValues[j] = entry.getValue();
+                j++;
+            }
+            regionLootKeys[i] = outerEntry.getKey().name();
+            i++;
+        }
+        bundle.put(REGION_LOOT_KEYS, regionLootKeys);
+        bundle.put(REGION_LOOT_REGIONS, regionLootRegions);
+        bundle.put(REGION_LOOT_VALUES, regionLootValues);
+
+        String[] regionShopKeys = new String[regionShops.size()];
+        String[] regionShopRegions = new String[Dungeon.Region.values().length];
+        int[] regionShopValues = new int[Dungeon.Region.values().length];
+
+        i = 0;
+        for (Map.Entry<HeroClass, Map<String, Integer>> outerEntry : regionShops.entrySet()) {
+            j = 0;
+            for (Map.Entry<String, Integer> entry : outerEntry.getValue().entrySet()) {
+                regionShopRegions[j] = entry.getKey();
+                regionShopValues[j] = entry.getValue();
+                j++;
+            }
+            regionShopKeys[i] = outerEntry.getKey().name();
+            i++;
+        }
+        bundle.put(REGION_SHOP_KEYS, regionShopKeys);
+        bundle.put(REGION_SHOP_REGIONS, regionShopRegions);
+        bundle.put(REGION_SHOP_VALUES, regionShopValues);
+
     }
 
     public static void preview(APDataSaver.Info info, Bundle bundle) {
         info.name = bundle.getString(PLAYER_NAME);
+        info.port = bundle.getString(PORT);
 
         info.checkedLocations = bundle.getInt(CHECKS_COUNT);
         info.totalLocations = bundle.getInt(TOTAL_CHECKS);
@@ -429,6 +521,7 @@ public class APManager {
         totalChecks = bundle.getInt(TOTAL_CHECKS);
 
         playerName = bundle.getString(PLAYER_NAME);
+        port = bundle.getString(PORT);
         wins = bundle.getInt(WINS);
         requiredWins = bundle.getInt(REQUIRED_WINS);
 
@@ -444,6 +537,44 @@ public class APManager {
         max_missile_tier = bundle.getInt(MAX_MISSILE_TIER);
 
         alchemy_level = bundle.getInt(ALCHEMY_LEVEL);
+
+        String[] killKeys = bundle.getStringArray(KILL_KEYS);
+        int[] killValues = bundle.getIntArray(KILL_VALUES);
+
+        for(int i = 0; i <killKeys.length; i++) {
+            kills.put( HeroClass.valueOf(killKeys[i]) , killValues[i] );
+        }
+
+        String[] levelClearKeys = bundle.getStringArray(LEVEL_CLEAR_KEYS);
+        int[] levelClearValues = bundle.getIntArray(LEVEL_CLEAR_VALUES);
+
+        for (int i = 0; i < levelClearKeys.length; i++) {
+            levelClears.put( HeroClass.valueOf(levelClearKeys[i]) , levelClearValues[i] );
+        }
+
+        String[] regionLootKeys = bundle.getStringArray(REGION_LOOT_KEYS);
+        String[] regionLootRegions = bundle.getStringArray(REGION_LOOT_REGIONS);
+        int[] regionLootValues = bundle.getIntArray(REGION_LOOT_VALUES);
+
+        for (String key : regionLootKeys) {
+            HeroClass clazz = HeroClass.valueOf(key);
+            regionLoot.put(clazz, new HashMap<>());
+            for (int i = 0; i < regionLootRegions.length; i++) {
+                regionLoot.get(clazz).put(regionLootRegions[i], regionLootValues[i]);
+            }
+        }
+
+        String[] regionShopKeys = bundle.getStringArray(REGION_SHOP_KEYS);
+        String[] regionShopRegions = bundle.getStringArray(REGION_SHOP_REGIONS);
+        int[] regionShopValues = bundle.getIntArray(REGION_SHOP_VALUES);
+
+        for (String key : regionShopKeys) {
+            HeroClass clazz = HeroClass.valueOf(key);
+            regionLoot.put(clazz, new HashMap<>());
+            for (int i = 0; i < regionShopRegions.length; i++) {
+                regionLoot.get(clazz).put(regionShopRegions[i], regionShopValues[i]);
+            }
+        }
 
     }
 }

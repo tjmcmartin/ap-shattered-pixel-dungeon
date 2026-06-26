@@ -5,9 +5,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.shatteredpixel.shatteredpixeldungeon.APDataSaver;
 import com.shatteredpixel.shatteredpixeldungeon.Chrome;
+import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Icons;
@@ -15,6 +20,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndGameInProgress;
 import com.watabou.glscripts.Script;
 import com.watabou.glwrap.Blending;
 import com.watabou.glwrap.Quad;
@@ -23,6 +29,8 @@ import com.watabou.noosa.Camera;
 import com.watabou.noosa.Game;
 import com.watabou.noosa.TextInput;
 import com.watabou.utils.RectF;
+
+import java.io.IOException;
 
 public class ConnectScene extends PixelScene {
 
@@ -188,7 +196,73 @@ public class ConnectScene extends PixelScene {
 
     //TODO change this to communicate with ap server
     private void connect() {
-        ShatteredPixelDungeon.switchScene(StartScene.class);
+
+        String port = addressField.getText();
+        String name = slotNameField.getText();
+        String password = passwordField.getText();
+
+        //Connect to ap server here
+
+        //reset APManager attributes
+        APManager.reset();
+
+        APManager.setPlayerInfo(port, name);
+
+        int slot = APDataSaver.findSlot(port, name);
+        int total = APDataSaver.getTotalSlots();
+
+        //If there is no slot that matches
+        if (slot == -1) {
+
+            System.out.println("Creating a new slot");
+
+            //If there is an open slot
+            if (total < GamesInProgress.MAX_SLOTS) {
+                //Start a new game in that new slot
+                GamesInProgress.selectedClass = null;
+                GamesInProgress.curSlot = GamesInProgress.firstEmpty();
+
+                ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
+            }
+            //If there isn't an open slot
+            else {
+                System.out.println("You must replace a slot!");
+                //Have the player chose a slot to replace
+                ShatteredPixelDungeon.switchScene(StartScene.class);
+            }
+        //If there is a matching slot
+        } else {
+
+            System.out.println("Loading existing save...");
+
+            //Load the slot for that data
+            try {
+                APDataSaver.load(slot);
+            } catch (IOException e) {
+                ShatteredPixelDungeon.reportException(e);
+            }
+
+            GamesInProgress.curSlot = slot;
+
+            //If the slot has a game in progress
+            if (GamesInProgress.gameExists(slot)) {
+                System.out.println("Loading in-progress run...");
+                Dungeon.hero = null;
+                Dungeon.daily = Dungeon.dailyReplay = false;
+                ActionIndicator.clearAction();
+                InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
+                ShatteredPixelDungeon.switchScene(InterlevelScene.class);
+            }
+            //If the game doesn't exist
+            else {
+                System.out.println("Start a new run!");
+                //Let the user start a new run
+                GamesInProgress.selectedClass = null;
+
+                ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
+            }
+        }
+
     }
 
 }

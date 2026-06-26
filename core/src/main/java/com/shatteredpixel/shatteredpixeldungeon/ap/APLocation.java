@@ -39,13 +39,13 @@ public enum APLocation {
     * 2700-2749 rogue shop items            - Caves:  30%
     * 2750-2799 huntress shop items         - City:   20%
     * 2800-2849 duelist shop items          - Halls:  10%
-    * 2850-2899 cleric shop items
+    * 2850-2899 cleric shop items <-- Make sure MAX_REGION_SHOP_ITEM matches!
     * 2900-2999 global shop items
     *
     ****** RANDOM LOOT ITEMS 3000-3600 *****
-    * 3000-3024 warrior special rooms
-    * 3025-3049 warrior locked rooms
-    * 3050-3099 warrior loot items
+    * 3000-3024 warrior special rooms <-- Make sure MAX_REGION_LOOT_ITEMS matches!
+    * 3025-3049 warrior locked rooms <---
+    * 3050-3099 warrior loot items <-----
     *
     * 3100-3124 mage special rooms
     * 3125-3149 mage locked rooms
@@ -1260,6 +1260,9 @@ public enum APLocation {
             return fromString( Dungeon.hero.heroClass.name() + "_" + nameFromDepth(depth) );
         }
     }
+
+    public static final int MAX_REGION_LOOT_ITEMS = 100;
+    public static final int MAX_REGION_SHOP_ITEMS = 50;
 
     public final int apid;
     APLocation(int apid) {

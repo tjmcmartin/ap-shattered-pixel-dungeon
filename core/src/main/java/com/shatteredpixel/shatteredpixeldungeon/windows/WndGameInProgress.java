@@ -121,14 +121,6 @@ public class WndGameInProgress extends Window {
 			protected void onClick() {
 				super.onClick();
 
-				try {
-					APDataSaver.load(slot);
-				} catch (IOException e) {
-					ShatteredPixelDungeon.reportException(e);
-				}
-
-
-
 				GamesInProgress.curSlot = slot;
 
 				if ( GamesInProgress.gameExists(slot) ) {
