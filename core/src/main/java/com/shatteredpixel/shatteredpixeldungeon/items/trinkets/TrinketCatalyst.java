@@ -110,11 +110,11 @@ public class TrinketCatalyst extends Item {
 
 	public static class Recipe extends com.shatteredpixel.shatteredpixeldungeon.items.Recipe {
 
-		public final int alchemyLevel = 10;
+		public final int alchemyLevel = 0;
 
 		@Override
 		public boolean testIngredients(ArrayList<Item> ingredients) {
-			return ingredients.size() == 1 && ingredients.get(0) instanceof TrinketCatalyst;
+			return ingredients.size() == 1 && ingredients.get(0) instanceof TrinketCatalyst && !APManager.availableTrinkets.isEmpty();
 		}
 
 		@Override

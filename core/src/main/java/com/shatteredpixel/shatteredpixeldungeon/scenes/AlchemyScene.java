@@ -695,6 +695,9 @@ public class AlchemyScene extends PixelScene {
 		if (recipe != null){
 			if (APManager.alchemy_level < recipe.alchemyLevel) {
 				return;
+			} else if (ingredients.get(0) instanceof TrinketCatalyst && !APManager.availableTrinkets.isEmpty()) {
+				ShatteredPixelDungeon.scene().addToFront( new WndMessage( Messages.get(AlchemyScene.class, "no_trinkets") ));
+				return;
 			}
 			int cost = recipe.cost(ingredients);
 			if (toolkit != null){

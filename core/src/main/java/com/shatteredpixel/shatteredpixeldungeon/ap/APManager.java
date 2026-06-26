@@ -190,6 +190,8 @@ public class APManager {
             switch (item.getCategory()) {
                 case TRINKET:
                     availableTrinkets.add(item);
+                    Generator.Category trinket = Generator.Category.TRINKET;
+                    trinket.defaultProbs[item.id] = trinket.maxDefaultProbs[item.id];
                     break;
                 case WEAPONRY:
                     switch (item.id) {
