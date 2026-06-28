@@ -29,8 +29,12 @@ public class RedButton extends StyledButton {
 		this(label, 9);
 	}
 
-	public RedButton( String label, int size ){
-		super( Chrome.Type.RED_BUTTON, label, size);
+	public RedButton( String label, int size )	{
+		this(label, size, false);
+	}
+
+	public RedButton( String label, int size, boolean disabled) {
+		super( (disabled) ? Chrome.Type.GREY_BUTTON : Chrome.Type.RED_BUTTON, label, size);
 	}
 	
 }

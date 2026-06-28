@@ -22,9 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.TengusMask;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
@@ -38,6 +40,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class WndChooseSubclass extends Window {
 	
@@ -68,7 +72,8 @@ public class WndChooseSubclass extends Window {
 						super.onSelect(index);
 						if (index == 0){
 							WndChooseSubclass.this.hide();
-							HeroSubClass cls = Random.oneOf(hero.heroClass.subClasses());
+							ArrayList<HeroSubClass> availableSubclasses = APManager.getSubclasses(hero);
+							HeroSubClass cls = availableSubclasses.get( Random.Int(availableSubclasses.size()) );
 							tome.choose(cls);
 							GameScene.show(new WndInfoSubclass(hero.heroClass, cls));
 						}
@@ -100,24 +105,28 @@ public class WndChooseSubclass extends Window {
 		float pos = message.bottom() + 3*GAP;
 
 		for (HeroSubClass subCls : hero.heroClass.subClasses()){
-			RedButton btnCls = new RedButton( subCls.shortDesc(), 6 ) {
+			RedButton btnCls = new RedButton( subCls.shortDesc(), 6, APManager.hasSubclass(subCls) ) {
 				@Override
 				protected void onClick() {
-					GameScene.show(new WndOptions(new HeroIcon(subCls),
-							Messages.titleCase(subCls.title()),
-							Messages.get(WndChooseSubclass.this, "are_you_sure"),
-							Messages.get(WndChooseSubclass.this, "yes"),
-							Messages.get(WndChooseSubclass.this, "no")){
-						@Override
-						protected void onSelect(int index) {
-							hide();
-							if (index == 0 && WndChooseSubclass.this.parent != null){
-								WndChooseSubclass.this.hide();
-								tome.choose( subCls );
-								Statistics.qualifiedForRandomVictoryBadge = false;
+					if (APManager.hasSubclass(subCls)) {
+						GameScene.show(new WndOptions(new HeroIcon(subCls),
+								Messages.titleCase(subCls.title()),
+								Messages.get(WndChooseSubclass.this, "are_you_sure"),
+								Messages.get(WndChooseSubclass.this, "yes"),
+								Messages.get(WndChooseSubclass.this, "no")){
+							@Override
+							protected void onSelect(int index) {
+								hide();
+								if (index == 0 && WndChooseSubclass.this.parent != null){
+									WndChooseSubclass.this.hide();
+									tome.choose(subCls);
+									Statistics.qualifiedForRandomVictoryBadge = false;
+								}
 							}
-						}
-					});
+						});
+					} else {
+						ShatteredPixelDungeon.scene().addToFront( new WndMessage( Messages.get(this, "subclass_locked", subCls.title()) ));
+					}
 				}
 			};
 			btnCls.leftJustify = true;

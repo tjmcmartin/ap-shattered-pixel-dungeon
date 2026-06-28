@@ -22,9 +22,11 @@
 package com.shatteredpixel.shatteredpixeldungeon.windows;
 
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.Statistics;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.KingsCrown;
 import com.shatteredpixel.shatteredpixeldungeon.items.armor.Armor;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
@@ -39,6 +41,8 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
 import com.watabou.noosa.Game;
 import com.watabou.utils.Random;
+
+import java.util.ArrayList;
 
 public class WndChooseAbility extends Window {
 
@@ -70,7 +74,8 @@ public class WndChooseAbility extends Window {
 						super.onSelect(index);
 						if (index == 0){
 							WndChooseAbility.this.hide();
-							ArmorAbility abil = Random.oneOf(hero.heroClass.armorAbilities());
+							ArrayList<ArmorAbility> availableAbilities = APManager.getArmorAbilities(hero);
+							ArmorAbility abil = availableAbilities.get( Random.Int(availableAbilities.size()) );
 							crown.upgradeArmor(hero, armor, abil);
 							GameScene.show(new WndInfoArmorAbility(hero.heroClass, abil));
 						}
@@ -106,29 +111,33 @@ public class WndChooseAbility extends Window {
 		float pos = body.bottom() + 3*GAP;
 		for (ArmorAbility ability : hero.heroClass.armorAbilities()) {
 
-			RedButton abilityButton = new RedButton(ability.shortDesc(), 6){
+			RedButton abilityButton = new RedButton(ability.shortDesc(), 6, APManager.hasArmorAbility(ability)){
 				@Override
 				protected void onClick() {
-					GameScene.show(new WndOptions( new HeroIcon( ability ),
-							Messages.titleCase(ability.name()),
-							Messages.get(WndChooseAbility.this, "are_you_sure"),
-							Messages.get(WndChooseAbility.this, "yes"),
-							Messages.get(WndChooseAbility.this, "no")){
+					if (APManager.hasArmorAbility(ability)) {
+						GameScene.show(new WndOptions(new HeroIcon(ability),
+								Messages.titleCase(ability.name()),
+								Messages.get(WndChooseAbility.this, "are_you_sure"),
+								Messages.get(WndChooseAbility.this, "yes"),
+								Messages.get(WndChooseAbility.this, "no")) {
 
-						@Override
-						protected void onSelect(int index) {
-							hide();
-							if (index == 0 && WndChooseAbility.this.parent != null){
-								WndChooseAbility.this.hide();
-								if (crown != null) {
-									crown.upgradeArmor(hero, armor, ability);
-								} else {
-									new KingsCrown().upgradeArmor(hero, null, ability);
+							@Override
+							protected void onSelect(int index) {
+								hide();
+								if (index == 0 && WndChooseAbility.this.parent != null) {
+									WndChooseAbility.this.hide();
+									if (crown != null) {
+										crown.upgradeArmor(hero, armor, ability);
+									} else {
+										new KingsCrown().upgradeArmor(hero, null, ability);
+									}
+									Statistics.qualifiedForRandomVictoryBadge = false;
 								}
-								Statistics.qualifiedForRandomVictoryBadge = false;
 							}
-						}
-					});
+						});
+					} else {
+						ShatteredPixelDungeon.scene().addToFront( new WndMessage( Messages.get(this, "ability_locked", Messages.titleCase(ability.name())) ));
+					}
 				}
 			};
 			abilityButton.leftJustify = true;

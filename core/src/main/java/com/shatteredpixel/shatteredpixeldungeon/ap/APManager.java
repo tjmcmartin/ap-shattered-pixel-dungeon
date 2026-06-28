@@ -15,8 +15,11 @@ import java.util.Set;
 import com.shatteredpixel.shatteredpixeldungeon.APDataSaver;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Buff;
 import com.shatteredpixel.shatteredpixeldungeon.actors.buffs.Poison;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Hero;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroClass;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.HeroSubClass;
 import com.shatteredpixel.shatteredpixeldungeon.actors.hero.Talent;
+import com.shatteredpixel.shatteredpixeldungeon.actors.hero.abilities.ArmorAbility;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APItem.Subcategory;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
@@ -52,7 +55,9 @@ public class APManager {
     public static int max_missile_tier = 0;
     public static int alchemy_level = 0;
     public static EnumSet<APItem> availableTrinkets = EnumSet.noneOf(APItem.class);
-    public static EnumMap<Subcategory, HashSet<APItem>> availableItems = new EnumMap<>(Subcategory.class);
+    public static EnumMap<Subcategory, EnumSet<APItem>> availableItems = new EnumMap<>(Subcategory.class);
+    public static EnumMap<Subcategory, EnumSet<APItem>> availableSubclasses = new EnumMap<>(Subcategory.class);
+    public static EnumMap<Subcategory, EnumSet<APItem>> availableArmorAbilities = new EnumMap<>(Subcategory.class);
     public static EnumMap<APLocation.shopLocationType, List<Integer>> shopLocations = new EnumMap<>(APLocation.shopLocationType.class);
     public static EnumMap<APLocation.lootLocationType, List<Integer>> lootLocations = new EnumMap<>(APLocation.lootLocationType.class);
     public static EnumMap<HeroClass, Integer> kills = new EnumMap<>(HeroClass.class);
@@ -81,7 +86,9 @@ public class APManager {
 
         availableItems.clear();
         for (Subcategory cat : Subcategory.values()) {
-            availableItems.put(cat, new HashSet<>());
+            availableItems.put(cat, EnumSet.noneOf(APItem.class));
+            availableSubclasses.put(cat, EnumSet.noneOf(APItem.class));
+            availableArmorAbilities.put(cat, EnumSet.noneOf(APItem.class));
         }
 
         shopLocations.clear();
@@ -193,6 +200,12 @@ public class APManager {
                     Generator.Category trinket = Generator.Category.TRINKET;
                     trinket.defaultProbs[item.id] = trinket.maxDefaultProbs[item.id];
                     break;
+                case SUBCLASS:
+                    availableSubclasses.get(item.getSubcategory()).add(item);
+                    break;
+                case ARMOR_ABILITY:
+                    availableArmorAbilities.get(item.getSubcategory()).add(item);
+                    break;
                 case WEAPONRY:
                     switch (item.id) {
                         case 0:
@@ -282,8 +295,51 @@ public class APManager {
     }
 
     public static boolean hasTalent (Talent talent) {
-        APItem item = APItem.fromString( talent.name() );
+        APItem item = APItem.fromString( talent.name().toUpperCase() );
         return hasItem(item);
+    }
+
+    public static boolean hasSubclasses(Hero hero) {
+        Subcategory subCat = Subcategory.fromString( hero.heroClass.name().toUpperCase() );
+        return !availableSubclasses.get(subCat).isEmpty();
+    }
+
+    public static boolean hasSubclass(HeroSubClass subCls) {
+        APItem item = APItem.fromString( subCls.name().toUpperCase() );
+        return hasItem(item);
+    }
+
+    public static ArrayList<HeroSubClass> getSubclasses(Hero hero) {
+        HeroSubClass[] heroSubClasses = hero.heroClass.subClasses();
+        ArrayList<HeroSubClass> unlockedSubclasses = new ArrayList<>();
+        for (HeroSubClass subClass : heroSubClasses) {
+            if (hasSubclass(subClass)) {
+                unlockedSubclasses.add(subClass);
+            }
+        }
+
+        return unlockedSubclasses;
+    }
+
+    public static boolean hasArmorAbilities(Hero hero) {
+        Subcategory subCat = Subcategory.fromString( hero.heroClass.name().toUpperCase() );
+        return !availableArmorAbilities.get(subCat).isEmpty();
+    }
+
+    public static boolean hasArmorAbility(ArmorAbility abil) {
+        APItem item = APItem.fromString( abil.name().toUpperCase() );
+        return hasItem(item);
+    }
+
+    public static ArrayList<ArmorAbility> getArmorAbilities(Hero hero) {
+        ArmorAbility[] armorAbilities = hero.heroClass.armorAbilities();
+        ArrayList<ArmorAbility> unlockedArmorAbilities = new ArrayList<>();
+        for (ArmorAbility abil : armorAbilities) {
+            if (hasArmorAbility(abil)) {
+                unlockedArmorAbilities.add(abil);
+            }
+        }
+        return unlockedArmorAbilities;
     }
 
     public static boolean hasEquipmentType(Generator.Category genCat) {

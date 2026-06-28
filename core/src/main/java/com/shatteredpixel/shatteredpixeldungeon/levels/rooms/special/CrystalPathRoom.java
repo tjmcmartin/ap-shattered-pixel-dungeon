@@ -45,6 +45,7 @@ import com.watabou.utils.Random;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.HashSet;
 
 public class CrystalPathRoom extends SpecialRoom {
@@ -259,7 +260,7 @@ public class CrystalPathRoom extends SpecialRoom {
 
 	//this prevents duplicates
 	public void addRewardItem(Generator.Category cat, ArrayList<Item> items, ArrayList<Item> dupes){
-		HashSet<APItem> choices = APManager.availableItems.get( APItem.Subcategory.fromString(cat.name()) );
+		EnumSet<APItem> choices = APManager.availableItems.get( APItem.Subcategory.fromString(cat.name()) );
 		int n = 0; //failsafe counter
 		while (true) {
 			Item reward = Generator.random(cat);
