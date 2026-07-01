@@ -566,7 +566,13 @@ public class APManager {
                     availableTrinkets.add(item);
                     break;
                 case EQUIPMENT:
+                    Generator.Category cat = Generator.Category.valueOf(item.getSubcategory().name());
+                    cat.defaultProbs[item.id] = cat.maxDefaultProbs[item.id];
+                    if (cat.defaultProbs2 != null) {
+                        cat.defaultProbs2[item.id] = cat.maxDefaultProbs2[item.id];
+                    }
                     availableItems.get(item.getSubcategory()).add(item);
+                    break;
             }
         }
 

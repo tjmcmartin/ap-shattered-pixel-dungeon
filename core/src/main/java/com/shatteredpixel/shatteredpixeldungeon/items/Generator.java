@@ -645,6 +645,13 @@ public class Generator {
 	private static HashMap<Category,Float> defaultCatProbs = new LinkedHashMap<>();
 	private static HashMap<Category,Float> categoryProbs = new LinkedHashMap<>();
 
+	public static void resetDefaults() {
+		for (Category cat : Category.values()) {
+			if (cat.maxDefaultProbs != null) Arrays.fill(cat.defaultProbs, 0);
+			if (cat.maxDefaultProbs2 != null) Arrays.fill(cat.defaultProbs2, 0);
+		}
+	}
+
 	public static void fullReset() {
 		usingFirstDeck = Random.Int(2) == 0;
 		generalReset();
