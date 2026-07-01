@@ -614,8 +614,8 @@ public class HeroSelectScene extends PixelScene {
 
 			if( !cl.isUnlocked() ){
 				ShatteredPixelDungeon.scene().addToFront( new WndMessage(cl.unlockMsg()));
-			} else if (cl != HeroClass.WARRIOR && !APManager.hasItem( APItem.fromString( cl.title()) )) {
-				ShatteredPixelDungeon.scene().addToFront( new WndMessage( Messages.get(HeroSelectScene.class, "hero_locked", cl.name()) ));
+			} else if (cl != HeroClass.WARRIOR && !APManager.hasItem( APItem.fromString( cl.name()) )) {
+				ShatteredPixelDungeon.scene().addToFront( new WndMessage( Messages.get(HeroSelectScene.class, "hero_locked", cl.title()) ));
 			} else if (GamesInProgress.selectedClass == cl) {
 				Window w = new WndHeroInfo(cl);
 				if (landscape()){
