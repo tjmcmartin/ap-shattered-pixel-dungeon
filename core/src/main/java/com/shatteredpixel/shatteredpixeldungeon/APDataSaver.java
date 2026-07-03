@@ -1,5 +1,6 @@
 package com.shatteredpixel.shatteredpixeldungeon;
 
+import com.shatteredpixel.shatteredpixeldungeon.ap.APConnector;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
@@ -10,7 +11,9 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class APDataSaver {
-    public static final String DATA_FILE = "archipelago.dat";
+    private static final String DATA_FILE = "archipelago.dat";
+    private static final String SAVE_ID = "save_id";
+    private static final String PLAYER_NAME = "player_name";
     private static HashMap<Integer, Info> slotStates = new HashMap<>();
     public static String modDataFile(int slot) {
         return GamesInProgress.gameFolder(slot) + "/" + DATA_FILE;
@@ -24,6 +27,9 @@ public class APDataSaver {
             Bundle bundle = new Bundle();
 
             APManager.store(bundle);
+
+            bundle.put(SAVE_ID, APConnector.getClient().getSaveID());
+            bundle.put(PLAYER_NAME, APConnector.getClient().getMyName());
 
             FileUtils.bundleToFile( modDataFile(slot), bundle);
 
@@ -40,15 +46,15 @@ public class APDataSaver {
 
     }
 
-    public static int findSlot(String port, String name) {
-        System.out.println("Searching for a slot that matches port "+port+", name "+name);
+    public static int findSlot(String saveID) {
+        System.out.println("Searching for a slot that matches id "+saveID);
         for (int i = 1; i <= GamesInProgress.MAX_SLOTS; i++) {
             Info slot = getSlotInfo(i);
             System.out.println(
                     (slot == null)? "slot was null" :
-                    "slot= "+i+", port= "+slot.port+", name="+slot.name
+                    "slot= "+i+", id="+slot.saveID
             );
-            if (slot != null && name.equals(slot.name) && port.equals(slot.port)) {
+            if (slot != null && saveID.equals(slot.saveID)) {
                 System.out.println("Match found!");
                 return i;
             }
@@ -80,6 +86,8 @@ public class APDataSaver {
 
                 info = new Info();
                 APManager.preview(info, bundle);
+                info.saveID = bundle.getString(SAVE_ID);
+                info.name = bundle.getString(PLAYER_NAME);
 
             } catch (IOException e) {
                 info = null;
@@ -97,8 +105,9 @@ public class APDataSaver {
     public static void setSlotInfo(int slot) {
         Info info = new Info();
 
-        info.port = APManager.port;
-        info.name = APManager.playerName;
+        info.saveID = APConnector.getClient().getSaveID();
+
+        info.name = APConnector.getClient().getMyName();
 
         info.checkedLocations = APManager.checksCount;
         info.totalLocations = APManager.totalChecks;
@@ -110,8 +119,9 @@ public class APDataSaver {
     }
 
     public static class Info {
+        public String saveID;
+
         public String name;
-        public String port;
 
         public int checkedLocations;
         public int totalLocations;

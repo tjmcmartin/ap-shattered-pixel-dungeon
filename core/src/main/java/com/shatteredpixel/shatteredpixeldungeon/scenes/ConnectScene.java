@@ -10,9 +10,12 @@ import com.shatteredpixel.shatteredpixeldungeon.Chrome;
 import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APConnector;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
 import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSprite;
+import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ExitButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.IconButton;
@@ -21,7 +24,9 @@ import com.shatteredpixel.shatteredpixeldungeon.ui.RenderedTextBlock;
 import com.shatteredpixel.shatteredpixeldungeon.ui.StyledButton;
 import com.shatteredpixel.shatteredpixeldungeon.ui.TitleBackground;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Window;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndConnect;
 import com.shatteredpixel.shatteredpixeldungeon.windows.WndGameInProgress;
+import com.shatteredpixel.shatteredpixeldungeon.windows.WndTitledMessage;
 import com.watabou.glscripts.Script;
 import com.watabou.glwrap.Blending;
 import com.watabou.glwrap.Quad;
@@ -44,6 +49,8 @@ public class ConnectScene extends PixelScene {
     private StyledButton btnConnect;
     private IconButton btnExit;
     private Stage stage;
+
+    private WndConnect connectWindow;
 
     @Override
     public void create() {
@@ -90,6 +97,11 @@ public class ConnectScene extends PixelScene {
             public void enterPressed() {
                 addressField.nextField();
             }
+
+            @Override
+            public void escapePressed() {
+                onBackPressed();
+            }
         };
         addressField.setText("");
         addressField.setMaxLength(30);
@@ -116,6 +128,11 @@ public class ConnectScene extends PixelScene {
             public void enterPressed() {
                 slotNameField.nextField();
             }
+
+            @Override
+            public void escapePressed() {
+                onBackPressed();
+            }
         };
         slotNameField.setText("FILLER");
         slotNameField.setMaxLength(30);
@@ -137,6 +154,11 @@ public class ConnectScene extends PixelScene {
             @Override
             public void enterPressed() {
                 connect();
+            }
+
+            @Override
+            public void escapePressed() {
+                onBackPressed();
             }
         };
         passwordField.setText("FILLER");
@@ -202,68 +224,20 @@ public class ConnectScene extends PixelScene {
         String name = slotNameField.getText();
         String password = passwordField.getText();
 
+        //Create the window that shows something is happenings
+        connectWindow = new WndConnect();
+        addToFront( connectWindow );
+
         //Connect to ap server here
+        APConnector.connect(port, name, password);
 
-        //reset APManager attributes
-        APManager.reset();
-        Generator.resetDefaults();
+    }
 
-        APManager.setPlayerInfo(port, name);
+    public void onFailedConnect(String message) {
+        //remove the previous window
+        connectWindow.hide();
 
-        int slot = APDataSaver.findSlot(port, name);
-        int total = APDataSaver.getTotalSlots();
-
-        //If there is no slot that matches
-        if (slot == -1) {
-
-            System.out.println("Creating a new slot");
-
-            //If there is an open slot
-            if (total < GamesInProgress.MAX_SLOTS) {
-                //Start a new game in that new slot
-                GamesInProgress.selectedClass = null;
-                GamesInProgress.curSlot = GamesInProgress.firstEmpty();
-
-                ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
-            }
-            //If there isn't an open slot
-            else {
-                System.out.println("You must replace a slot!");
-                //Have the player chose a slot to replace
-                ShatteredPixelDungeon.switchScene(StartScene.class);
-            }
-        //If there is a matching slot
-        } else {
-
-            System.out.println("Loading existing save...");
-
-            //Load the slot for that data
-            try {
-                APDataSaver.load(slot);
-            } catch (IOException e) {
-                ShatteredPixelDungeon.reportException(e);
-            }
-
-            GamesInProgress.curSlot = slot;
-
-            //If the slot has a game in progress
-            if (GamesInProgress.gameExists(slot)) {
-                System.out.println("Loading in-progress run...");
-                Dungeon.hero = null;
-                Dungeon.daily = Dungeon.dailyReplay = false;
-                ActionIndicator.clearAction();
-                InterlevelScene.mode = InterlevelScene.Mode.CONTINUE;
-                ShatteredPixelDungeon.switchScene(InterlevelScene.class);
-            }
-            //If the game doesn't exist
-            else {
-                System.out.println("Start a new run!");
-                //Let the user start a new run
-                GamesInProgress.selectedClass = null;
-
-                ShatteredPixelDungeon.switchScene(HeroSelectScene.class);
-            }
-        }
+        addToFront( new WndTitledMessage( new ItemSprite(ItemSpriteSheet.AP_ITEM), "Connection Failed", Messages.get(this, message) ));
 
     }
 

@@ -6,4 +6,5 @@ java.sourceCompatibility = java.targetCompatibility = appJavaCompatibility
 dependencies {
     api project(':SPD-classes')
     implementation project(':services')
+    implementation "io.github.archipelagomw:Java-Client:0.2.1"
 }

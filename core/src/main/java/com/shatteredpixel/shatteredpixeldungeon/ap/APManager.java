@@ -38,9 +38,6 @@ public class APManager {
     private static final EnumMap<APItem, Integer> receivedItems = new EnumMap<>(APItem.class);
     private static final Queue<APItem> pendingItems = new LinkedList<>();
     private static boolean processingItems = false;
-
-    public static String playerName;
-    public static String port;
     public static int wins;
     public static int requiredWins;
 
@@ -130,11 +127,6 @@ public class APManager {
                 regionShops.get(clazz).put(region.name(), 0);
             }
         }
-    }
-
-    public static void setPlayerInfo(String url, String name) {
-        port = url;
-        playerName = name;
     }
 
     public static void checkLocation(APLocation location) {
@@ -456,8 +448,6 @@ public class APManager {
         bundle.put(CHECKS_COUNT, checksCount);
         bundle.put(TOTAL_CHECKS, totalChecks);
 
-        bundle.put(PLAYER_NAME, playerName);
-        bundle.put(PORT, port);
         bundle.put(WINS, wins);
         bundle.put(REQUIRED_WINS, requiredWins);
 
@@ -540,8 +530,6 @@ public class APManager {
     }
 
     public static void preview(APDataSaver.Info info, Bundle bundle) {
-        info.name = bundle.getString(PLAYER_NAME);
-        info.port = bundle.getString(PORT);
 
         info.checkedLocations = bundle.getInt(CHECKS_COUNT);
         info.totalLocations = bundle.getInt(TOTAL_CHECKS);
@@ -584,8 +572,6 @@ public class APManager {
         checksCount = bundle.getInt(CHECKS_COUNT);
         totalChecks = bundle.getInt(TOTAL_CHECKS);
 
-        playerName = bundle.getString(PLAYER_NAME);
-        port = bundle.getString(PORT);
         wins = bundle.getInt(WINS);
         requiredWins = bundle.getInt(REQUIRED_WINS);
 

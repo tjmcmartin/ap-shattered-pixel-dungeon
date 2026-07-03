@@ -154,6 +154,8 @@ public class TextInput extends Component {
 					} else if (keycode == Input.Keys.UP) {
 						upPressed();
 						return true;
+					} else if (keycode == Input.Keys.ESCAPE) {
+						escapePressed();
 					}
 					return false;
 				}
@@ -189,6 +191,10 @@ public class TextInput extends Component {
 
 	public void enterPressed(){
 		//fires any time enter is pressed, do nothing by default
+	}
+
+	public void escapePressed() {
+		//fires any time escape is preseed, do nothing by default
 	}
 
 	public void downPressed() {
