@@ -6,6 +6,7 @@ import com.shatteredpixel.shatteredpixeldungeon.Dungeon;
 import com.shatteredpixel.shatteredpixeldungeon.GamesInProgress;
 import com.shatteredpixel.shatteredpixeldungeon.ShatteredPixelDungeon;
 import com.shatteredpixel.shatteredpixeldungeon.items.Generator;
+import com.shatteredpixel.shatteredpixeldungeon.messages.Messages;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.ConnectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.HeroSelectScene;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.InterlevelScene;
@@ -16,6 +17,7 @@ import com.watabou.noosa.Scene;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import io.github.archipelagomw.events.ConnectionResultEvent;
 
@@ -118,6 +120,22 @@ public class APConnector {
         return reason.replaceAll("(?<=[a-z])(?=[A-Z])", "_").toLowerCase();
     }
 
+    public static void sendCheck(int id) {
 
+        client.scoutLocations(new ArrayList<>(id));
+
+        client.checkLocation(id);
+    }
+
+    public static void receiveItem(Long itemID, String itemName, String sendingPlayer) {
+        APManager.out( Messages.get(APConnector.class, "item_received", itemName, sendingPlayer) );
+        receiveItem(itemID);
+    }
+
+    public static void receiveItem(Long itemID) {
+        APItem item = APItem.fromId( itemID.intValue() );
+        System.out.println("id="+itemID+", item:"+item);
+        APManager.receiveItem(item);
+    }
 
 }

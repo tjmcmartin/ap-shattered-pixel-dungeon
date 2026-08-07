@@ -129,6 +129,10 @@ public class APManager {
         }
     }
 
+    public static void out(String msg) {
+        GLog.h( "[AP] " + msg );
+    }
+
     public static void checkLocation(APLocation location) {
         checkLocation(location, false);
     }
@@ -154,20 +158,12 @@ public class APManager {
             }
         }
 
-
-        APItem randItem = APItem.values()[Random.Int(APItem.values().length)];
-
-
-        //TODO fix once ap side integrated
-        GLog.w("[AP] " + Messages.get(APManager.class, "item_sent", randItem, "player"));
-
-        receiveItem(randItem);
+        APConnector.sendCheck(location.apid);
     }
 
     public static void receiveItem(APItem item) {
 
         pendingItems.add(item);
-        GLog.h("[AP] " + Messages.get(APManager.class, "item_sent", item, "player"));
 
     }
     public static void processPendingItems() {
