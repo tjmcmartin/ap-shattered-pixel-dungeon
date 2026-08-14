@@ -44,6 +44,7 @@ import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Ghoul;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mimic;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Mob;
 import com.shatteredpixel.shatteredpixeldungeon.actors.mobs.Snake;
+import com.shatteredpixel.shatteredpixeldungeon.ap.APChat;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APLocation;
 import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.effects.BannerSprites;
@@ -91,6 +92,7 @@ import com.shatteredpixel.shatteredpixeldungeon.tiles.GridTileMap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.RaisedTerrainTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.TerrainFeaturesTilemap;
 import com.shatteredpixel.shatteredpixeldungeon.tiles.WallBlockingTilemap;
+import com.shatteredpixel.shatteredpixeldungeon.ui.APChatbox;
 import com.shatteredpixel.shatteredpixeldungeon.ui.ActionIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.AttackIndicator;
 import com.shatteredpixel.shatteredpixeldungeon.ui.Banner;
@@ -176,6 +178,8 @@ public class GameScene extends PixelScene {
 	private BossHealthBar boss;
 
 	private GameLog log;
+
+	private APChatbox apLog;
 
 	private static CellSelector cellSelector;
 	
@@ -502,6 +506,10 @@ public class GameScene extends PixelScene {
 		log.camera = uiCamera;
 		log.newLine();
 		add( log );
+
+		apLog = APChat.createChatbox();
+		apLog.camera = uiCamera;
+		add( apLog );
 
 		if (uiSize > 0){
 			bringToFront(status);
@@ -995,6 +1003,13 @@ public class GameScene extends PixelScene {
 			} else {
 				scene.log.setRect(insets.left, y, 160 - insets.left, 0);
 			}
+		}
+
+		if (SPDSettings.interfaceSize() == 0) {
+			float width = uiCamera.width - insets.right;
+			scene.apLog.setRect(insets.right - width, scene.menu.bottom()+2, width, 0);
+		} else {
+			scene.apLog.setRect(insets.right - 160, scene.menu.bottom()+2 , 160, 0);
 		}
 
 		float pos = scene.toolbar.top();

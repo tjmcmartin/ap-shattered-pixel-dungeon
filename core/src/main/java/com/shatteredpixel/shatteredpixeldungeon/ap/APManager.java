@@ -130,7 +130,7 @@ public class APManager {
     }
 
     public static void out(String msg) {
-        GLog.h( "[AP] " + msg );
+        APChat.i( "[AP] " + msg );
     }
 
     public static void checkLocation(APLocation location) {
@@ -154,7 +154,7 @@ public class APManager {
             } else if ( name.contains("shop") && !name.contains("global") ) {
                 regionShops.get(heroClass).put(region, regionShops.get(heroClass).get(region) + 1);
             } else {
-                GLog.n( "[WARNING] Stat for " + location.name() + " not stored properly");
+                APChat.i( "[WARNING] Stat for " + location.name() + " not stored properly");
             }
         }
 
@@ -267,7 +267,7 @@ public class APManager {
                     }
                     break;
                 default:
-                    GLog.i("[TODO] The item " + item + " does nothing atm, sorry!");
+                    APChat.i("[TODO] The item " + item + " does nothing atm, sorry!");
             }
         }
 
