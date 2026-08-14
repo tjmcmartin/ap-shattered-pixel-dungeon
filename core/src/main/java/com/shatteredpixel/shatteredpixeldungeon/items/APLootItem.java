@@ -8,6 +8,7 @@ import com.shatteredpixel.shatteredpixeldungeon.ap.APManager;
 import com.shatteredpixel.shatteredpixeldungeon.scenes.GameScene;
 import com.shatteredpixel.shatteredpixeldungeon.sprites.ItemSpriteSheet;
 import com.watabou.noosa.audio.Sample;
+import com.watabou.utils.Bundle;
 
 import java.util.ArrayList;
 
@@ -19,9 +20,11 @@ public class APLootItem extends Item {
     private APLocation location;
 
     public APLootItem() {
-        this(Dungeon.depth, true);
+
     }
-    public APLootItem(boolean forShop) { this(Dungeon.depth, forShop); }
+    public APLootItem(boolean forShop) {
+        this(Dungeon.depth, forShop);
+    }
     public APLootItem(int depth, boolean forShop) {
         if (forShop) location = APManager.getNextShopLocation(depth);
         else location = APManager.getNextLootLocation(depth);
@@ -72,5 +75,19 @@ public class APLootItem extends Item {
     public int value() {
         //TODO change this once ap server connection is implemented
         return 30;
+    }
+
+    private static final String LOCATION = "location";
+
+    @Override
+    public void storeInBundle(Bundle bundle) {
+        super.storeInBundle(bundle);
+        bundle.put(LOCATION, location);
+    }
+
+    @Override
+    public void restoreFromBundle(Bundle bundle) {
+        super.restoreFromBundle(bundle);
+        location = bundle.getEnum(LOCATION, APLocation.class);
     }
 }

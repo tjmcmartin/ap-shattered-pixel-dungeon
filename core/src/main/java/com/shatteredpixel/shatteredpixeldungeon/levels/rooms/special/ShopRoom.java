@@ -353,13 +353,13 @@ public class ShopRoom extends SpecialRoom {
 					break;
 				}
 			default:
-				rare = (APManager.hasItem(APItem.ARCANE_STYLUS)) ? new Stylus() : new APLootItem();
+				rare = (APManager.hasItem(APItem.ARCANE_STYLUS)) ? new Stylus() : new APLootItem(true);
 		}
 		rare.cursed = false;
 		rare.cursedKnown = true;
 		itemsToSpawn.add( rare );
 
-		itemsToSpawn.add( new APLootItem() );
+		itemsToSpawn.add( new APLootItem(true) );
 
 		//use a new generator here to prevent items in shop stock affecting levelgen RNG (e.g. sandbags)
 		//we can use a random long for the seed as it will be the same long every time
