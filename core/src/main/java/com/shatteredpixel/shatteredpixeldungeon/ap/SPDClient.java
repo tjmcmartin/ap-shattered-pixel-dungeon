@@ -23,7 +23,7 @@ public class SPDClient extends Client {
 
     public SPDClient() {
         getEventManager().registerListener(this);
-        this.setItemsHandlingFlags(0b001);
+        this.setItemsHandlingFlags(0b011);
     }
 
     public String getSaveID() {

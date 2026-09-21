@@ -1006,11 +1006,12 @@ public class GameScene extends PixelScene {
 		}
 
 		if (SPDSettings.interfaceSize() == 0) {
-			float width = uiCamera.width - insets.right;
-			scene.apLog.setRect(insets.right - width, scene.menu.bottom()+2, width, 0);
+			float width = Math.round(uiCamera.width * 2f/3f)- insets.right;
+			scene.apLog.setRect(uiCamera.width - insets.right - width, scene.menu.bottom()+2, width, 0);
 		} else {
-			scene.apLog.setRect(insets.right - 160, scene.menu.bottom()+2 , 160, 0);
+			scene.apLog.setRect(uiCamera.width - insets.right - 160, scene.menu.bottom()+2 , 160, 0);
 		}
+		System.out.println(scene.apLog.top() + ", " + scene.apLog.left());
 
 		float pos = scene.toolbar.top();
 		if (tagsOnLeft && SPDSettings.interfaceSize() > 0){

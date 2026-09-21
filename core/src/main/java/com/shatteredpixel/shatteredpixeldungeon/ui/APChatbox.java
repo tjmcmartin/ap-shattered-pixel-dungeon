@@ -6,11 +6,13 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Signal;
 
 import java.util.ArrayList;
+import java.util.Queue;
 
 public class APChatbox extends Component {
 
     private Chat chat;
     private ScrollPane pane;
+    private ArrayList<String> msgsToAdd = new ArrayList<>();
 
     public APChatbox(String[] text) {
         super();
@@ -40,21 +42,9 @@ public class APChatbox extends Component {
         @Override
         public boolean onSignal(String text) {
 
-            System.out.println("Signal received: \""+text+"\"");
-
-            messages.add(text);
-            add( PixelScene.renderTextBlock( text, 6 )  );
-
-            if (length > APChat.MAX_LINES) {
-                RenderedTextBlock oldMsg = (RenderedTextBlock) members.get(0);
-                remove(oldMsg);
-                oldMsg.destroy();
-
-                messages.remove(0);
-
+            synchronized (msgsToAdd) {
+                msgsToAdd.add(text);
             }
-
-            layout();
 
             return false;
         }
@@ -74,6 +64,34 @@ public class APChatbox extends Component {
 
             height = curY;
 
+        }
+
+        @Override
+        public synchronized void update() {
+            synchronized (msgsToAdd) {
+                for (String msg : msgsToAdd) {
+
+                    System.out.println("Signal received: \""+msg+"\"");
+
+                    messages.add(msg);
+                    add( PixelScene.renderTextBlock( msg, 6 )  );
+
+                    if (length > APChat.MAX_LINES) {
+                        RenderedTextBlock oldMsg = (RenderedTextBlock) members.get(0);
+                        remove(oldMsg);
+                        oldMsg.destroy();
+
+                        messages.remove(0);
+
+                    }
+                }
+
+                layout();
+
+                msgsToAdd.clear();
+
+            }
+            super.update();
         }
     }
 }
