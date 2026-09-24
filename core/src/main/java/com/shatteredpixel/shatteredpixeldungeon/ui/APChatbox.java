@@ -6,7 +6,6 @@ import com.watabou.noosa.ui.Component;
 import com.watabou.utils.Signal;
 
 import java.util.ArrayList;
-import java.util.Queue;
 
 public class APChatbox extends Component {
 
@@ -23,6 +22,16 @@ public class APChatbox extends Component {
 
         pane = new ScrollPane(chat);
         add(pane);
+    }
+
+    @Override
+    protected void layout() {
+
+        pane.setRect(0, 0, width, height);
+        pane.layout();
+
+        chat.layout();
+
     }
 
     private class Chat extends Component implements Signal.Listener<String> {
@@ -51,8 +60,6 @@ public class APChatbox extends Component {
 
         @Override
         protected void layout() {
-            super.layout();
-
             float curY = 0;
             for (int i=length-1; i>=0; i--) {
                 RenderedTextBlock entry = (RenderedTextBlock) members.get(i);
