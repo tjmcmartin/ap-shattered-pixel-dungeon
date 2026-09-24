@@ -30,6 +30,7 @@ public class APChatbox extends Component {
         pane.setRect(0, 0, width, height);
         pane.layout();
 
+        chat.setSize(width, height);
         chat.layout();
 
     }
