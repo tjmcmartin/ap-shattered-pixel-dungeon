@@ -173,13 +173,16 @@ public class CrystalPathRoom extends SpecialRoom {
 
 		ArrayList<Item> duplicates = new ArrayList<>();
 
-		if (Random.Int(2) == 0){
+		if (Random.Int(2) == 0 && APManager.hasItem(APItem.SCROLL_OF_TRANSMUTATION) ){
 			addRewardItem(Generator.Category.POTION, potions, duplicates);
 			scrolls.add(Random.Float() < ExoticCrystals.consumableExoticChance()
 					? new ScrollOfMetamorphosis() : new ScrollOfTransmutation());
-		} else {
+		} else if (APManager.hasItem(APItem.POTION_OF_EXPERIENCE)) {
 			potions.add(Random.Float() < ExoticCrystals.consumableExoticChance()
 					? new PotionOfDivineInspiration() : new PotionOfExperience());
+			addRewardItem(Generator.Category.SCROLL, scrolls, duplicates);
+		} else {
+			addRewardItem(Generator.Category.POTION, potions, duplicates);
 			addRewardItem(Generator.Category.SCROLL, scrolls, duplicates);
 		}
 		addRewardItem(Generator.Category.POTION, potions, duplicates);
